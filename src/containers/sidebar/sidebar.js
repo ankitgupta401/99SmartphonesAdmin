@@ -17,6 +17,7 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import MailIcon from '@material-ui/icons/Mail';
 import HomeIcon from '@material-ui/icons/Home';
+
 const drawerWidth = 240;
 
 const useStyles = makeStyles((theme) => ({
@@ -116,7 +117,7 @@ export default function MiniDrawer(props) {
             <MenuIcon />
           </IconButton>
           <Typography variant="h6" noWrap>
-          99 Smartphones Admin
+          <img src="logo/logo3.jpeg" alt="" style={}/> Smartphones Admin
           </Typography>
         </Toolbar>
       </AppBar>

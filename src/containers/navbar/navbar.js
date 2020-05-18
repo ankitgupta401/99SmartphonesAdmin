@@ -7,7 +7,7 @@ const navbar = () => {
     <nav className="navbar navbar-light bg-light">
 
   <a className="navbar-brand" href="#">
-    99 Smartphones Admin
+   
   </a>
 </nav>
     </div>
