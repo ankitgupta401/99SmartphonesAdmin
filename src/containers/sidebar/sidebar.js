@@ -21,6 +21,11 @@ import HomeIcon from '@material-ui/icons/Home';
 const drawerWidth = 240;
 
 const useStyles = makeStyles((theme) => ({
+   adj: {
+    maxWidth: '35px',
+    alignItems:'left',
+    paddingRight: '5px'
+   },
   root: {
     display: 'flex',
   },
@@ -30,6 +35,7 @@ const useStyles = makeStyles((theme) => ({
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen,
     }),
+ background: 'brown',
   },
   appBarShift: {
     marginLeft: drawerWidth,
@@ -49,6 +55,7 @@ const useStyles = makeStyles((theme) => ({
     width: drawerWidth,
     flexShrink: 0,
     whiteSpace: 'nowrap',
+    
   },
   drawerOpen: {
     width: drawerWidth,
@@ -75,11 +82,15 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(0, 1),
     // necessary for content to be below app bar
     ...theme.mixins.toolbar,
+  
   },
   content: {
     flexGrow: 1,
     padding: theme.spacing(3),
+    
   },
+
+ 
 }));
 
 export default function MiniDrawer(props) {
@@ -97,13 +108,16 @@ export default function MiniDrawer(props) {
 
   return (
     <div className={classes.root}>
+
       <CssBaseline />
+     
       <AppBar
         position="fixed"
         className={clsx(classes.appBar, {
           [classes.appBarShift]: open,
         })}
       >
+      
         <Toolbar>
           <IconButton
             color="inherit"
@@ -117,7 +131,8 @@ export default function MiniDrawer(props) {
             <MenuIcon />
           </IconButton>
           <Typography variant="h6" noWrap>
-          <img src="logo/logo3.jpeg" alt="" style={}/> Smartphones Admin
+          { !open ? <span><img src="logo/logo3.jpeg" alt="" className={classes.adj} />Smartphones Admin</span> : null}
+        
           </Typography>
         </Toolbar>
       </AppBar>
@@ -134,7 +149,9 @@ export default function MiniDrawer(props) {
           }),
         }}
       >
+          
         <div className={classes.toolbar}>
+        { open ? <span><img src="logo/logo3.jpeg" alt="" className={classes.adj} /><span >Smartphones Admin</span></span> : null}
           <IconButton onClick={handleDrawerClose}>
             {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
           </IconButton>
@@ -150,6 +167,7 @@ export default function MiniDrawer(props) {
         </List>
         <Divider />
         <List>
+       
           {['Ankit Gupta', 'Access: Admin', 'ag3831124@gmail.com'].map((text, index) => (
             <ListItem button key={text}>
              
@@ -159,6 +177,7 @@ export default function MiniDrawer(props) {
         </List>
       </Drawer>
       <main className={classes.content}>
+          <br/>  <br/>
      {props.children}
         <div className={classes.toolbar} />
       </main>
