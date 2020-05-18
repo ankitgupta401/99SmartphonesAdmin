@@ -7,3 +7,18 @@
     height: 30px;
     width: 50px;
 }
+
+.fnt { font-size: 1rem; }
+
+@media (min-width: 576px) {
+    .fnt { font-size: 1.25rem; }
+}
+@media (min-width: 768px) {
+    .fnt { font-size: 1.5rem; }
+}
+@media (min-width: 992px) {
+    .fnt { font-size: 1.5rem; }
+}
+@media (min-width: 1200px) {
+    .fnt { font-size: 1.5rem; }
+}

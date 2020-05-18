@@ -145,15 +145,15 @@ export default function MiniDrawer(props) {
           >
             <MenuIcon />
           </IconButton>
-          <Typography variant="h6" noWrap>
-          { !open ? <span><img src="logo/logo3.jpeg" alt="" className={classes.adj} />Smartphones Admin</span> : null}
+      
+          { !open ? <span className={Styles.fnt}><img src="logo/logo3.jpeg" alt="" className={classes.adj} />Smartphones Admin</span> : null}
         
-          </Typography>
+      
 <div className={Styles.logout}>
 
 <Dropdown>
   <Dropdown.Toggle variant="secondary" id="dropdown-basic">
-  <i class="icofont-business-man-alt-2" ></i>
+  <i className="icofont-business-man-alt-2" ></i>
   </Dropdown.Toggle>
 
   <Dropdown.Menu>
@@ -181,15 +181,15 @@ export default function MiniDrawer(props) {
       >
           
         <div className={classes.toolbar2}>
-        { open ? <span><img src="logo/logo3.jpeg" alt="" className={classes.adj} />Smartphones Admin</span> : null}
+        { open ? <span ><img src="logo/logo3.jpeg" alt="" className={classes.adj} />Smartphones Admin</span> : null}
           <IconButton onClick={handleDrawerClose}>
             {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
           </IconButton>
         </div>
         <Divider />
         <List>
-          {['Dashboard', 'Add Products', 'Add Blog', 'Add News', 'New Menu', 'New User'].map((text, index) => (
-            <ListItem button key={text}>
+          {['Dashboard', 'Add Products', 'Add Blog', 'Add News', 'New Menu', 'New User', 'Profile'].map((text, index) => (
+            <ListItem button key={index}>
               <ListItemIcon>{index % 2 === 0 ? <HomeIcon /> : <MailIcon />}</ListItemIcon>
               <ListItemText primary={text} />
             </ListItem>
@@ -199,7 +199,7 @@ export default function MiniDrawer(props) {
         <List>
        
           {['Ankit Gupta', 'Access: Admin', 'ag3831124@gmail.com'].map((text, index) => (
-            <ListItem button key={text}>
+            <ListItem button key={index}>
              
               <ListItemText primary={text} />
             </ListItem>
