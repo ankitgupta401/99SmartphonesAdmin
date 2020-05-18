@@ -17,7 +17,8 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import MailIcon from '@material-ui/icons/Mail';
 import HomeIcon from '@material-ui/icons/Home';
-
+import Styles from './sidebar.module.css';
+import Dropdown from 'react-bootstrap/Dropdown';
 const drawerWidth = 240;
 
 const useStyles = makeStyles((theme) => ({
@@ -55,7 +56,7 @@ const useStyles = makeStyles((theme) => ({
     width: drawerWidth,
     flexShrink: 0,
     whiteSpace: 'nowrap',
-    
+   
   },
   drawerOpen: {
     width: drawerWidth,
@@ -82,14 +83,27 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(0, 1),
     // necessary for content to be below app bar
     ...theme.mixins.toolbar,
-  
+   
+  },
+  toolbar2: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'flex-end',
+    padding: theme.spacing(0, 1),
+    // necessary for content to be below app bar
+    ...theme.mixins.toolbar,
+    background: 'brown',
+    color:'white',
+     fontSize: '15px'
   },
   content: {
     flexGrow: 1,
     padding: theme.spacing(3),
     
   },
-
+  btnHide: {
+    display: 'hidden'
+  }
  
 }));
 
@@ -119,6 +133,7 @@ export default function MiniDrawer(props) {
       >
       
         <Toolbar>
+      
           <IconButton
             color="inherit"
             aria-label="open drawer"
@@ -134,6 +149,21 @@ export default function MiniDrawer(props) {
           { !open ? <span><img src="logo/logo3.jpeg" alt="" className={classes.adj} />Smartphones Admin</span> : null}
         
           </Typography>
+<div className={Styles.logout}>
+
+<Dropdown>
+  <Dropdown.Toggle variant="secondary" id="dropdown-basic">
+  <i class="icofont-business-man-alt-2" ></i>
+  </Dropdown.Toggle>
+
+  <Dropdown.Menu>
+    <Dropdown.Item href="#/action-1">Profile</Dropdown.Item>
+    <Dropdown.Item href="#/action-2">My Blogs</Dropdown.Item>
+    <Dropdown.Item href="#/action-3">Logout</Dropdown.Item>
+  </Dropdown.Menu>
+</Dropdown>
+</div>
+          
         </Toolbar>
       </AppBar>
       <Drawer
@@ -150,8 +180,8 @@ export default function MiniDrawer(props) {
         }}
       >
           
-        <div className={classes.toolbar}>
-        { open ? <span><img src="logo/logo3.jpeg" alt="" className={classes.adj} /><span >Smartphones Admin</span></span> : null}
+        <div className={classes.toolbar2}>
+        { open ? <span><img src="logo/logo3.jpeg" alt="" className={classes.adj} />Smartphones Admin</span> : null}
           <IconButton onClick={handleDrawerClose}>
             {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
           </IconButton>
