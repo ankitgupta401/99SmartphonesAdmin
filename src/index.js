@@ -4,11 +4,22 @@ import 'bootstrap/dist/css/bootstrap.css';
 import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
+import { BrowserRouter, Route, Link } from "react-router-dom";
+import {Provider} from 'react-redux';
+import addProductsBlogReducer from './containers/pages/addProdBlog/store/reducer';
+import { createStore } from 'redux';
 
-ReactDOM.render(
+const store = createStore(addProductsBlogReducer);
+
+
+ReactDOM.render(  
+  <Provider store={store}>
   <React.StrictMode>
+    <BrowserRouter>
     <App />
-  </React.StrictMode>,
+    </BrowserRouter>
+  </React.StrictMode>
+  </Provider>,
   document.getElementById('root')
 );
 
