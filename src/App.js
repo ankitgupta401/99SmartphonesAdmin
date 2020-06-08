@@ -3,7 +3,7 @@ import Navbar from './containers/navbar/navbar';
 import Sidebar from './containers/sidebar/sidebar';
 import AddProducts from './containers/pages/add-products/addProducts';
 import  AddProductsBlog from './containers/pages/addProdBlog/AddProdBlog';
-import { BrowserRouter, Route, Link , Switch} from "react-router-dom";
+import {  Route , Switch} from "react-router-dom";
 
 function App() {
   return (

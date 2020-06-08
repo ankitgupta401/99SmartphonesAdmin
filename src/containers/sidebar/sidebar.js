@@ -6,7 +6,7 @@ import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import List from '@material-ui/core/List';
 import CssBaseline from '@material-ui/core/CssBaseline';
-import Typography from '@material-ui/core/Typography';
+
 import Divider from '@material-ui/core/Divider';
 import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
@@ -19,6 +19,7 @@ import MailIcon from '@material-ui/icons/Mail';
 import HomeIcon from '@material-ui/icons/Home';
 import Styles from './sidebar.module.css';
 import Dropdown from 'react-bootstrap/Dropdown';
+import { Link } from 'react-router-dom';
 const drawerWidth = 240;
 
 const useStyles = makeStyles((theme) => ({
@@ -158,7 +159,8 @@ export default function MiniDrawer(props) {
 
   <Dropdown.Menu>
     <Dropdown.Item href="#/action-1">Profile</Dropdown.Item>
-    <Dropdown.Item href="#/action-2">My Blogs</Dropdown.Item>
+    
+    <Dropdown.Item >My Blogs</Dropdown.Item>
     <Dropdown.Item href="#/action-3">Logout</Dropdown.Item>
   </Dropdown.Menu>
 </Dropdown>
@@ -188,11 +190,15 @@ export default function MiniDrawer(props) {
         </div>
         <Divider />
         <List>
-          {['Dashboard', 'Add Products', 'Add Blog', 'Add News', 'New Menu', 'New User', 'Profile'].map((text, index) => (
-            <ListItem button key={index}>
+          {[{value: 'Dashboard', link:"/"}, {value: 'Add Products', link:"/"}, {value: 'Add Products Blog', link:"/add-products-blog"}, {value: 'Add News', link:"/"}, {value: 'New Menu', link:"/"}, {value: 'New User', link:"/"},{value: 'Profile', link:"/"}].map((text, index) => (
+             <Link to={text.link} key={index}>
+           <ListItem button >
+            
               <ListItemIcon>{index % 2 === 0 ? <HomeIcon /> : <MailIcon />}</ListItemIcon>
-              <ListItemText primary={text} />
+              <ListItemText primary={text.value} />
+            
             </ListItem>
+            </Link>
           ))}
         </List>
         <Divider />

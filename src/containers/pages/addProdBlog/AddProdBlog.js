@@ -21,8 +21,23 @@ const useStyles = makeStyles((theme) => ({
 
 const AddProdBlog =(props) => {
 
+const proChange = (data) => {
+props.add_pro(data);
+  console.log(data);
+}
+
+const conChange = (data) => {
+  props.add_con(data);
+    console.log(data);
+  }
     const getField = (type) => {
-        const data = {value:"" ,currentRowLevel:props.currentLevel, type:type}
+      console.log(props.currentConLevel)
+        let data = {value:"" ,currentRowLevel:props.currentLevel, type:type}
+        if(type === 'Pros'){
+          data ={...data, currentProLevel:props.currentProLevel , currentConLevel: props.currentConLevel};
+        } else if(type === 'Cons'){
+          data ={...data, currentProLevel:props.currentProLevel , currentConLevel: props.currentConLevel};
+        }
         props.add_form_row(data);
         setShowInputOptions(false);
     }
@@ -36,14 +51,22 @@ const AddProdBlog =(props) => {
       <div>
         <h5> What Type Of Input Do You Want</h5>
         <br/>  
-        <Button variant="contained" color="primary" onClick={() => getField('Input')} component="span">
+        <Button style={{padding:'4px'}} variant="contained" color="primary" onClick={() => getField('Input')} component="span">
           Input
         </Button> {" "}
-        <Button variant="contained" color="primary" onClick={() => getField('TextArea')} component="span">
+        <Button style={{padding:'4px'}} variant="contained" color="primary" onClick={() => getField('TextArea')} component="span">
           Text Area
         </Button> {" "}
-        <Button variant="contained" color="primary" onClick={() => getField('Image')}  component="span">
-          Image Upload</Button> 
+        <Button style={{padding:'4px'}} variant="contained" color="primary" onClick={() => getField('Image')}  component="span">
+          Image Upload</Button> {" "}
+          <Button style={{padding:'4px'}} variant="contained" color="primary" onClick={() => getField('Specs')}  component="span">
+         Add Speification</Button> {" "}
+         <Button style={{padding:'4px'}} variant="contained" color="primary" onClick={() => getField('Pros')}  component="span">
+         Pros</Button> {" "}
+         <Button style={{padding:'4px'}} variant="contained" color="primary" onClick={() => getField('Cons')}  component="span">
+         Cons</Button> {" "}
+         <Button style={{padding:'4px'}} variant="contained" color="primary" onClick={() => getField('List')}  component="span">
+         List</Button> 
        </div>
       );
 
@@ -55,23 +78,44 @@ const AddProdBlog =(props) => {
                    </div>
 
                </div>
-               <div style={{paddingLeft: '10%'}}>
+
+               {/* Right Side */}
+               <div className="row">
+               <div className="col-md-4 col-sm-12">
+
+               </div>
+               
+
+                     {/* Left Side */}
+
+               <div className="col-md-8 col-sm-12">
+               <div   style={{paddingLeft: '10%'}}>
 
                
              
               {/* <TextField id="outlined-basic"  label="Product Name" variant="outlined" />  */}
               {Object.keys(props.form).map((container, i) => {
            return (
-         <div key={i}>
-             <IconButton aria-label="delete" onClick={()=> props.remove_form_row(container) } className={classes.margin}>
+         <div key={i} >
+             <IconButton aria-label="delete"
+              onClick={
+                ()=>{
+                props.remove_form_row(container) 
+                } } className={classes.margin}>
           <DeleteIcon />
         </IconButton>
-             <Fields type={props.form[container].type} label={'Row ' +props.form[container].currentRowLevel} changed={(event) =>console.log(event.target.value)}></Fields>
+             <Fields type={props.form[container].type} label={'New Row '}
+             currentLevel={props.form[container].currentRowLevel}
+             currentProLevel ={props.form[container].currentProLevel}
+             currentConLevel ={props.form[container].currentConLevel}
+             proChanged ={(value)=>proChange(value)}
+             conChanged ={(value)=>conChange(value)}
+              changed={(value) => {props.add_data(value)}}></Fields>
              <br/>    <br/>
            </div>);
          })}
          <br/>
-               <Button variant="outlined" color="primary" onClick={()=> setShowInputOptions(true)}>
+               <Button variant="outlined" color="primary" onClick={()=> setShowInputOptions(!showInputOptions)}>
                  Add Row 
                 </Button>
                  
@@ -98,6 +142,8 @@ const AddProdBlog =(props) => {
       </Button>
     </div>
     </div>
+    </div>
+    </div>
             </Card>
             );
 
@@ -106,13 +152,20 @@ const AddProdBlog =(props) => {
 const mapStateToProps =(state) => {
     return {
         currentLevel : state.currentRowLevel,
-        form: state.form
+        form: state.form,
+        pros: state.actualData.Pros,
+        cons: state.actualData.Cons,
+        currentProLevel: state.currentProLevel,
+        currentConLevel: state.currentConLevel
     }
 }
 const mapDispatchToActions = (dispatch) => {
     return {
         add_form_row: (data) =>dispatch({type: actionTypes.ADD_ROW , row: data}),
-        remove_form_row: (data) =>dispatch({type: actionTypes.REMOVE_ROW , key: data})
+        remove_form_row: (data) =>dispatch({type: actionTypes.REMOVE_ROW , key: data}),
+        add_data: (data) => dispatch({type: actionTypes.ADD_DATA , row: data}),
+        add_pro:(data) => dispatch({type: actionTypes.ADD_PROS , row: data}),
+        add_con:(data) => dispatch({type: actionTypes.ADD_CONS , row: data}),
     }
 }
 
