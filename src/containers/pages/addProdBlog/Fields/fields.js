@@ -98,6 +98,22 @@ const change =(e)=> {
   
 }
 
+const docUpload =(e) => {
+console.log(e);
+  let tempState = {...state};
+if(e.target.name === 'type'){
+ return  setState({...tempState, type:e.target.value})
+} else{
+  if(state.type.localeCompare('element')===0){
+    setState({...tempState, type:'Image', value: "http://" });
+  } else{
+    setState({...tempState,  value: "http://" });
+  }
+ 
+    return   props.changed(state);
+}
+  
+}
 
 const showStyles = () => {
   
@@ -204,7 +220,7 @@ const scriptDropdown = (
           {scriptDropdown}   
           {styleInput}
           <br/>
-            <TextField id="outlined-basic"  style={{width:"100%"}} label={props.label} inputProps={{name: 'value'}} variant="outlined" onChange={change} /> 
+            <TextField id="outlined-basic"  style={{width:"100%"}} label={props.label} inputprops={{name: 'value'}} variant="outlined" onChange={change} /> 
             </React.Fragment>
           )
       case 'Image':
@@ -215,10 +231,10 @@ const scriptDropdown = (
         <Select
           labelId="demo-simple-select-filled-label"
           id="demo-simple-select-filled"
-          value={state.type}
-         onChange={change}
+          defaultValue="Image"
+         onChange={docUpload}
 
-         inputProps={{
+         inputprops={{
           name: 'type',
         }}
         
@@ -229,8 +245,13 @@ const scriptDropdown = (
          
         </Select>
       </FormControl> {" "}
-
-            <Button  variant="contained"   color="primary" component="span" onChange={props.changed} >
+           <input type="file"    inputprops={{
+          name: 'upload',
+        }} onClick={ docUpload} style={{display:"none"}} id="file"></input>
+            <Button  variant="contained"   color="primary" component="span"
+                    onClick={() => {
+                       document.getElementById('file').click();
+                        }} >
             Upload
           </Button>
           </React.Fragment>
@@ -256,7 +277,7 @@ const scriptDropdown = (
              
               <br/>
                <TextField id="outlined-basic"  style={{width:"100%"}} label="Enter Pro" variant="outlined"  
-                inputProps={{
+                inputprops={{
             name: 'pro',
           }} onChange={change} /> 
             </React.Fragment>
@@ -268,7 +289,7 @@ const scriptDropdown = (
               {showStylesCons() ? styleInput: ''}
                 <br/>
                  <TextField id="outlined-basic" 
-                  inputProps={{
+                  inputprops={{
                    name: 'con',
                         }} style={{width:"100%"}} label="Enter Con" variant="outlined" onChange={change} /> 
                </React.Fragment>
