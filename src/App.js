@@ -2,7 +2,7 @@ import React from 'react';
 import Navbar from './containers/navbar/navbar';
 import Sidebar from './containers/sidebar/sidebar';
 import AddProducts from './containers/pages/add-products/addProducts';
-import  AddProductsBlog from './containers/pages/addProdBlog/AddProdBlog';
+import AddNews from './containers/pages/add-news/AddNews';
 import {  Route , Switch} from "react-router-dom";
 
 function App() {
@@ -14,7 +14,7 @@ function App() {
   <Switch>
 
       <Route path="/add-products" component={AddProducts} />
-      <Route path="/add-products-blog" component={AddProductsBlog} />
+      <Route path="/add-news" component={AddNews} />
     </Switch>
 
 

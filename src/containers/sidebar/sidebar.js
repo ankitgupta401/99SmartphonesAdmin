@@ -190,7 +190,7 @@ export default function MiniDrawer(props) {
         </div>
         <Divider />
         <List>
-          {[{value: 'Dashboard', link:"/"}, {value: 'Add Products', link:"/"}, {value: 'Add Products Blog', link:"/add-products-blog"}, {value: 'Add News', link:"/"}, {value: 'New Menu', link:"/"}, {value: 'New User', link:"/"},{value: 'Profile', link:"/"}].map((text, index) => (
+          {[{value: 'Dashboard', link:"/"}, {value: 'Add Products', link:"/"}, {value: 'Add Products Blog', link:"/add-products-blog"}, {value: 'Add News', link:"/add-news"}, {value: 'New Menu', link:"/"}, {value: 'New User', link:"/"},{value: 'Profile', link:"/"}].map((text, index) => (
              <Link to={text.link} key={index}>
            <ListItem button >
             
