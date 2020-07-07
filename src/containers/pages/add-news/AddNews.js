@@ -187,7 +187,14 @@ const AddNews = () => {
             setState((prevState) => { return { ...prevState, loading: true } });
             //save
             axios.post("save_news", state.data).then(res => {
-                setState((prevState) => { return { ...prevState, loading: false, save: false } });
+                paras =[];
+                
+                setState((prevState) => { 
+                    let temp = {...prevState};
+                    temp.data ={...prevState.data};
+                    temp.data.paras = [];
+                    return { ...temp, loading: false, save: false } 
+                });
                 //save
             });
 
