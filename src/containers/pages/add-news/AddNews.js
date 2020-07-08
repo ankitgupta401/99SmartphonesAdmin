@@ -17,6 +17,7 @@ const AddNews = () => {
     const [state, setState] = useState({
         noOfParas: 0,
         data: {
+            writer:'',
             title: '',
             mainImage: '',
             paras: [],
@@ -221,11 +222,18 @@ const AddNews = () => {
                 <div  >
                     <form style={{ paddingLeft: "10%" }} noValidate autoComplete="off">
                         <div className="row">
-                            <div className="col-md-6 col-sm-12">
+                        <div className="col-md-2 col-sm-12">
+
+<label>Writer email</label>
+<br />
+<TextField id="outlined-basic" placeholder="email" defaultValue="" onChange={(e) => { contentChange(e.target.value, 'writer') }} variant="outlined" />
+</div>
+
+                            <div className="col-md-4 col-sm-12">
 
                                 <label>Title</label>
                                 <br />
-                                <TextareaAutosize aria-label="minimum height" onChange={(e) => { contentChange(e.target.value, 'title') }} rowsMin={2} cols={50} placeholder="Enter The Title" />
+                                <TextareaAutosize aria-label="minimum height" onChange={(e) => { contentChange(e.target.value, 'title') }} rowsMin={2} cols={40} placeholder="Enter The Title" />
                             </div>
 
                             <div className="col-md-3 col-sm-12">
