@@ -4,6 +4,7 @@ import Sidebar from './containers/sidebar/sidebar';
 import AddProducts from './containers/pages/add-products/addProducts';
 import AddNews from './containers/pages/add-news/AddNews';
 import {  Route , Switch} from "react-router-dom";
+import { AddBlog } from './containers/pages/add-blog/AddBlog';
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
 
       <Route path="/add-products" component={AddProducts} />
       <Route path="/add-news" component={AddNews} />
+      <Route path="/add-blog" component={AddBlog} />
     </Switch>
 
 

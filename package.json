@@ -20,7 +20,8 @@
     "react-scripts": "^3.4.1",
     "react-spinners": "^0.9.0",
     "react-swipeable-views": "^0.13.9",
-    "redux": "^4.0.5"
+    "redux": "^4.0.5",
+    "sweetalert2": "^9.17.0"
   },
   "scripts": {
     "start": "react-scripts start",

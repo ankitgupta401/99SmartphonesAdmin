@@ -7,6 +7,7 @@ import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import { css } from "@emotion/core";
 import CircleLoader from "react-spinners/CircleLoader";
 import axios from '../../../axios-url';
+import Swal from 'sweetalert2';
 const override = css`
   display: block;
   margin: 0 auto;
@@ -17,9 +18,10 @@ const AddNews = () => {
     const [state, setState] = useState({
         noOfParas: 0,
         data: {
-            writer:'',
+            writer: '',
             title: '',
             mainImage: '',
+            category: '',
             paras: [],
 
         },
@@ -29,12 +31,12 @@ const AddNews = () => {
     });
 
     const contentChange = (e, place) => {
-       
-        setState((prevState) => { 
+
+        setState((prevState) => {
             let temp = { ...prevState };
             temp.data = { ...prevState.data };
             temp.data[place] = e;
-            return temp 
+            return temp
         });
     }
 
@@ -50,10 +52,10 @@ const AddNews = () => {
             data: formData,
             headers: { 'Content-Type': 'multipart/form-data' }
         }).then(res => {
-            
+
             setState(prevState => {
                 let temp = { ...prevState };
-                temp.data = {...prevState.data};
+                temp.data = { ...prevState.data };
                 temp.data[place] = res.data.result;
                 temp.loading = false;
                 return temp;
@@ -184,20 +186,40 @@ const AddNews = () => {
     }, [])
 
     useEffect(() => {
+       
         if (state.save === true) {
-            setState((prevState) => { return { ...prevState, loading: true } });
-            //save
-            axios.post("save_news", state.data).then(res => {
-                paras =[];
-                
-                setState((prevState) => { 
-                    let temp = {...prevState};
-                    temp.data ={...prevState.data};
+            if(state.data.writer === '' ||state.data.title === '' || state.data.mainImage === '' || state.data.category === '' ||state.data.paras.length === 0){
+                Swal.fire('Error', 'Please Add All details', 'error');
+                paras = [];
+    
+                setState((prevState) => {
+                    let temp = { ...prevState };
+                    temp.data = { ...prevState.data };
                     temp.data.paras = [];
-                    return { ...temp, loading: false, save: false } 
+                    return { ...temp, loading: false, save: false }
                 });
+             } else{
+                setState((prevState) => { return { ...prevState, loading: true } });
                 //save
-            });
+                axios.post("save_news", state.data).then(res => {
+                    if (res.data.code === 0) {
+                        Swal.fire('Success', 'News Added Successfully', 'success');
+                    } else {
+                        Swal.fire('Error', res.msg, 'error');
+                    }
+                    paras = [];
+    
+                    setState((prevState) => {
+                        let temp = { ...prevState };
+                        temp.data = { ...prevState.data };
+                        temp.data.paras = [];
+                        return { ...temp, loading: false, save: false }
+                    });
+                    //save
+                });
+             }
+         
+           
 
         }
     }, [state.save])
@@ -222,18 +244,18 @@ const AddNews = () => {
                 <div  >
                     <form style={{ paddingLeft: "10%" }} noValidate autoComplete="off">
                         <div className="row">
-                        <div className="col-md-2 col-sm-12">
+                            <div className="col-md-3 col-sm-12">
 
-<label>Writer email</label>
-<br />
-<TextField id="outlined-basic" placeholder="email" defaultValue="" onChange={(e) => { contentChange(e.target.value, 'writer') }} variant="outlined" />
-</div>
+                                <label>Writer email</label>
+                                <br />
+                                <TextField id="outlined-basic" placeholder="email" defaultValue="" onChange={(e) => { contentChange(e.target.value, 'writer') }} variant="outlined" />
+                            </div>
 
                             <div className="col-md-4 col-sm-12">
 
                                 <label>Title</label>
                                 <br />
-                                <TextareaAutosize aria-label="minimum height" onChange={(e) => { contentChange(e.target.value, 'title') }} rowsMin={2} cols={40} placeholder="Enter The Title" />
+                                <TextareaAutosize aria-label="minimum height" onChange={(e) => { contentChange(e.target.value, 'title') }} rowsMin={2} cols={30} placeholder="Enter The Title" />
                             </div>
 
                             <div className="col-md-3 col-sm-12">
@@ -241,19 +263,24 @@ const AddNews = () => {
                                 <Input type="file" onChange={(e) => onImageChange(e, 'mainImage')}></Input>
                             </div>
 
-                            <div className="col-md-2 col-sm-12">
+                            <div className="col-md-3 col-sm-12">
 
                                 <label>Enter No Of Paragraphs</label>
                                 <br />
                                 <TextField id="outlined-basic" placeholder="No Of Paragraphs" defaultValue="" onChange={(e) => paraChanged(e.target.value)} variant="outlined" />
                             </div>
+                            <div className="col-md-3 col-sm-12">
 
+                                <label>Category</label>
+                                <br />
+                                <TextField id="outlined-basic" placeholder="Category" defaultValue="" onChange={(e) => contentChange(e.target.value, 'category')} variant="outlined" />
+                            </div>
 
                         </div>
                         <div>
                             <br />
                             <h4>Enter The Main Content</h4>
-                         
+
                         </div>
                         {paras.map((val, i) => {
                             return (
@@ -263,7 +290,7 @@ const AddNews = () => {
 
                             )
                         })}
-                          <br />  <br />
+                        <br />  <br />
                         <div className="d-flex justify-content-center" >
                             <button type="button" className="btn btn-secondary" onClick={() => { setState({ ...state, save: true }) }}>Save</button>
                             <button style={{ marginLeft: "1%" }} type="reset" className="btn btn-danger">Clear</button>
