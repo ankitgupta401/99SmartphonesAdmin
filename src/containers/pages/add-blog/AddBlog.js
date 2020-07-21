@@ -23,7 +23,8 @@ const [state,setState] = useState({
     date: new Date(Date.now()).toISOString()
    },
    loading: false,
-   save: false
+   save: false,
+  
 })
 
 
@@ -42,7 +43,7 @@ useEffect(() => {
             });
          } else{
              console.log(state);
-            setState((prevState) => { return { ...prevState, loading: true } });
+            setState((prevState) => { return { ...prevState, loading: true} });
             //save
             let formData = new FormData();
             Object.keys(state.data).forEach((value, index) => {
@@ -53,6 +54,22 @@ useEffect(() => {
             axios.post("create_blog",formData ).then(res => {
                 if (res.data.code === 0) {
                     Swal.fire('Success', 'News Added Successfully', 'success');
+                    setState((prevState) => {
+                        let temp = { ...prevState };
+                       temp.data = {...prevState.data};
+                       temp.data = {
+                        writer:'',
+                        description:'',
+                        image:'',
+                        deleted:false,
+                        title: '',
+                        category:'',
+                        file:'',
+                        date: new Date(Date.now()).toISOString()
+                       }
+                        return { ...temp, loading: false, save: false }
+                    });
+                    // setState({...state, clear: false});
                 } else {
                     Swal.fire('Error', res.msg, 'error');
                 }
@@ -126,7 +143,7 @@ const paragraphImageChange = (e, place) => {
                     css={override}
                     size={80}
                     color={"#F89C04"}
-                    loading={state.loading}
+                    loading={state.loading || state.save}
                 />
             </div>
             <div>
@@ -134,26 +151,26 @@ const paragraphImageChange = (e, place) => {
                 <h4 style={{ paddingLeft: "6%" }}>Enter The Blog Details</h4>
                 <br />
             </div>
-            <div className="d-flex justify-content-center">
+            { !state.save ? <div  className="d-flex justify-content-center">
                 <div className="col-md-8 col-sm-12">
                     <form>
                         <div className="form-row">
                             <div className="form-group col-md-6">
                                 <label htmlFor="inputEmail4">Email</label>
-                                <input type="email" className="form-control" onChange={(e) => paragraphDataChange(e, 'writer')} id="inputEmail4" placeholder="Email" />
+                                <input type="email" value={state.data.writer} className="form-control" onChange={(e) => paragraphDataChange(e, 'writer')} id="inputEmail4" placeholder="Email" />
                             </div>
                             <div className="form-group col-md-6">
                                 <label htmlFor="inputPassword4">Category</label>
-                                <input type="text" className="form-control" onChange={(e) => paragraphDataChange(e, 'category')} id="inputPassword4" placeholder="Category" />
+                                <input type="text" value={state.data.category} className="form-control" onChange={(e) => paragraphDataChange(e, 'category')} id="inputPassword4" placeholder="Category" />
                             </div>
                         </div>
                         <div className="form-group">
                             <label htmlFor="inputAddress">Title</label>
-                            <textarea type="text" className="form-control" onChange={(e) => paragraphDataChange(e, 'title')} id="inputAddress" placeholder="Tilte" ></textarea>
+                            <textarea type="text" value={state.data.title} className="form-control" onChange={(e) => paragraphDataChange(e, 'title')} id="inputAddress" placeholder="Tilte" ></textarea>
                         </div>
                         <div className="form-group">
                             <label htmlFor="inputAddress2">Description</label>
-                            <textarea type="text" className="form-control" onChange={(e) => paragraphDataChange(e, 'description')} id="inputAddress" placeholder="Description" ></textarea>
+                            <textarea type="text" value={state.data.description} className="form-control" onChange={(e) => paragraphDataChange(e, 'description')} id="inputAddress" placeholder="Description" ></textarea>
                         </div>
                         <div className="row">
                         <div className="form-group">
@@ -163,13 +180,13 @@ const paragraphImageChange = (e, place) => {
 
                         <div className="form-group">
                             <label htmlFor="inputAddress2">Html File</label>
-                            <input  type="file" className="form-control" onChange={(e) => htmlAdd(e, 'file')} id="inputPassword4" placeholder="Html File" />
+                            <input  type="file"  className="form-control" onChange={(e) => htmlAdd(e, 'file')} id="inputPassword4" placeholder="Html File" />
                         </div>
                         </div>
                         <button type="button"  onClick={(e) => {e.preventDefault(); setState({ ...state, save: true }) }} className="btn btn-primary">Save</button>
                     </form>
                 </div>
-            </div>
+            </div>:''}
             <br/>
         </Card>
     )

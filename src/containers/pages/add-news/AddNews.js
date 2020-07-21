@@ -21,12 +21,13 @@ const AddNews = () => {
             writer: '',
             title: '',
             mainImage: '',
-            category: '',
+            category: [],
             paras: [],
 
         },
         save: false,
-        loading: false
+        loading: false,
+        categoryList: []
 
     });
 
@@ -74,6 +75,25 @@ const AddNews = () => {
             return temp
         }, console.log(state));
 
+    }
+
+
+    const handleChangeChk = (e) => {
+        console.log(e.target.value);
+        let temp = { ...state };
+        temp.data = { ...state.data };
+        temp.data.category = [...state.data.category];
+        if (temp.data.category.length === 0) {
+            temp.data.category.push(e.target.value);
+        } else {
+            if ((temp.data.category.indexOf(e.target.value) > -1)) {
+                temp.data.category.splice(temp.data.category.indexOf(e.target.value), 1);
+            } else {
+                temp.data.category.push(e.target.value);
+            }
+        }
+
+        setState({ ...temp });
     }
     const paragraphImageChange = (e, place, index) => {
         setState((prevState) => { return { ...prevState, loading: true } });
@@ -180,25 +200,32 @@ const AddNews = () => {
     }
     useEffect(() => {
         //paraChanged(3)
+        axios.post("/common_get_with_table_name",
+            { table: 'news_category_list', data: {} }).then(res => {
+                console.log(res);
+                setState(prevState => {
+                    return { ...prevState, categoryList: res.data.result }
+                });
+            })
         return () => {
             paras = [];
         }
     }, [])
 
     useEffect(() => {
-       
+
         if (state.save === true) {
-            if(state.data.writer === '' ||state.data.title === '' || state.data.mainImage === '' || state.data.category === '' ||state.data.paras.length === 0){
+            if (state.data.writer === '' || state.data.title === '' || state.data.mainImage === '' || state.data.category.length === 0 || state.data.paras.length === 0) {
                 Swal.fire('Error', 'Please Add All details', 'error');
                 paras = [];
-    
+
                 setState((prevState) => {
                     let temp = { ...prevState };
                     temp.data = { ...prevState.data };
                     temp.data.paras = [];
                     return { ...temp, loading: false, save: false }
                 });
-             } else{
+            } else {
                 setState((prevState) => { return { ...prevState, loading: true } });
                 //save
                 axios.post("save_news", state.data).then(res => {
@@ -208,7 +235,7 @@ const AddNews = () => {
                         Swal.fire('Error', res.msg, 'error');
                     }
                     paras = [];
-    
+
                     setState((prevState) => {
                         let temp = { ...prevState };
                         temp.data = { ...prevState.data };
@@ -217,9 +244,9 @@ const AddNews = () => {
                     });
                     //save
                 });
-             }
-         
-           
+            }
+
+
 
         }
     }, [state.save])
@@ -248,32 +275,38 @@ const AddNews = () => {
 
                                 <label>Writer email</label>
                                 <br />
-                                <TextField id="outlined-basic" placeholder="email" defaultValue="" onChange={(e) => { contentChange(e.target.value, 'writer') }} variant="outlined" />
+                                <input id="outlined-basic" placeholder="email" defaultValue="" onChange={(e) => { contentChange(e.target.value, 'writer') }} variant="outlined"  style={{height:"30px"}} />
                             </div>
+                            <div className="col-md-3 col-sm-12">
 
-                            <div className="col-md-4 col-sm-12">
-
-                                <label>Title</label>
+                                <label>Enter No Of Paragraphs</label>
                                 <br />
-                                <TextareaAutosize aria-label="minimum height" onChange={(e) => { contentChange(e.target.value, 'title') }} rowsMin={2} cols={30} placeholder="Enter The Title" />
+                                <input style={{height:"30px"}}  id="outlined-basic" placeholder="No Of Paragraphs" defaultValue="" onChange={(e) => paraChanged(e.target.value)} variant="outlined" />
                             </div>
+
 
                             <div className="col-md-3 col-sm-12">
                                 <label>Upload Main Image</label> <br />
                                 <Input type="file" onChange={(e) => onImageChange(e, 'mainImage')}></Input>
                             </div>
 
-                            <div className="col-md-3 col-sm-12">
+                            <div className="col-md-4 col-sm-12">
 
-                                <label>Enter No Of Paragraphs</label>
+                                <label>Title</label>
                                 <br />
-                                <TextField id="outlined-basic" placeholder="No Of Paragraphs" defaultValue="" onChange={(e) => paraChanged(e.target.value)} variant="outlined" />
+                                <TextareaAutosize aria-label="minimum height" onChange={(e) => { contentChange(e.target.value, 'title') }} rowsMin={2} cols={35} placeholder="Enter The Title" />
                             </div>
-                            <div className="col-md-3 col-sm-12">
+                            <div className="col-md-7 col-sm-12">
 
                                 <label>Category</label>
                                 <br />
-                                <TextField id="outlined-basic" placeholder="Category" defaultValue="" onChange={(e) => contentChange(e.target.value, 'category')} variant="outlined" />
+                                <div className="row">
+                                    {/* <div className="col-md-12 col-sm-12">  */}
+                                    {state.categoryList.map((val, index) => {
+                                        return (<div style={{ padding: '5px' }} key={val._id}><input type="checkbox" value={val.category} onChange={handleChangeChk} /> {val.category}</div>);
+                                    })}
+                                    {/* </div> */}
+                                </div>
                             </div>
 
                         </div>
