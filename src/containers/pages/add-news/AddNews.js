@@ -18,6 +18,8 @@ const AddNews = () => {
     const [state, setState] = useState({
         noOfParas: 0,
         data: {
+            alt_image:'',
+            description:'',
             writer: '',
             title: '',
             mainImage: '',
@@ -288,14 +290,26 @@ const AddNews = () => {
                             <div className="col-md-3 col-sm-12">
                                 <label>Upload Main Image</label> <br />
                                 <Input type="file" onChange={(e) => onImageChange(e, 'mainImage')}></Input>
+                                <br/>
+                              
                             </div>
+                            <div className="col-md-3 col-sm-12">
+                            <label>Alt Image</label> <br />
+                            <input type="text" placeholder="Alt Image" onChange={(e) => { contentChange(e.target.value, 'alt_image') }}/>
+                                </div>
 
-                            <div className="col-md-4 col-sm-12">
+                            <div className="col-md-5 col-sm-12">
 
                                 <label>Title</label>
                                 <br />
-                                <TextareaAutosize aria-label="minimum height" onChange={(e) => { contentChange(e.target.value, 'title') }} rowsMin={2} cols={35} placeholder="Enter The Title" />
+                                <TextareaAutosize aria-label="minimum height" onChange={(e) => { contentChange(e.target.value, 'title') }} rowsMin={2} className="form-control"  placeholder="Enter The Title" />
                             </div>
+                            <div className="col-md-6 col-sm-12">
+
+<label>Description</label>
+<br />
+<TextareaAutosize aria-label="minimum height" onChange={(e) => { contentChange(e.target.value, 'description') }} rowsMin={2} className="form-control"  placeholder="Enter The Description" />
+</div>
                             <div className="col-md-7 col-sm-12">
 
                                 <label>Category</label>
