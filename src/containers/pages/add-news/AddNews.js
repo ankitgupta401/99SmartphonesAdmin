@@ -3,7 +3,8 @@ import React, { useState, useEffect } from 'react'
 import TextareaAutosize from '@material-ui/core/TextareaAutosize';
 import { Card, TextField, Input } from '@material-ui/core';
 import CKEditor from '@ckeditor/ckeditor5-react';
-import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+// import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+import DecoupledEditor from '@ckeditor/ckeditor5-build-decoupled-document';
 import { css } from "@emotion/core";
 import CircleLoader from "react-spinners/CircleLoader";
 import axios from '../../../axios-url';
@@ -147,12 +148,15 @@ const AddNews = () => {
                                 <br />
                                 {/* <TextareaAutosize aria-label="minimum height" rowsMin={4} cols={60} placeholder="Enter The Title" /> */}
                                 <CKEditor
-                                    editor={ClassicEditor}
+                                    editor={DecoupledEditor}
                                     data=""
                                     onInit={editor => {
                                         // You can store the "editor" and use when it is needed.
                                         console.log('Editor is ready to use!', editor);
-
+                                        editor.ui.getEditableElement().parentElement.insertBefore(
+                                            editor.ui.view.toolbar.element,
+                                            editor.ui.getEditableElement()
+                                        );
                                         setState(prevState => {
                                             let temp = { ...prevState };
                                             temp.data = { ...prevState.data };
@@ -310,20 +314,24 @@ const AddNews = () => {
 <br />
 <TextareaAutosize aria-label="minimum height" onChange={(e) => { contentChange(e.target.value, 'description') }} rowsMin={2} className="form-control"  placeholder="Enter The Description" />
 </div>
-                            <div className="col-md-7 col-sm-12">
+                          {state.data.category.length < 4?  <div className="col-md-7 col-sm-12">
 
                                 <label>Category</label>
                                 <br />
                                 <div className="row">
                                     {/* <div className="col-md-12 col-sm-12">  */}
                                     {state.categoryList.map((val, index) => {
+                                       
+                                        if(state.data.category.length >= 3 && state.data.category.indexOf(val.category) === -1) {
+                                            return (<div style={{ padding: '5px' }} key={val._id}><input disabled type="checkbox" value={val.category} onChange={handleChangeChk} /> {val.category}</div>);
+                                        }
                                         return (<div style={{ padding: '5px' }} key={val._id}><input type="checkbox" value={val.category} onChange={handleChangeChk} /> {val.category}</div>);
                                     })}
                                     {/* </div> */}
                                 </div>
-                            </div>
-
+                            </div> : '' }
                         </div>
+
                         <div>
                             <br />
                             <h4>Enter The Main Content</h4>
