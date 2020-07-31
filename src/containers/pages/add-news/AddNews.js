@@ -306,7 +306,7 @@ const AddNews = () => {
 
                                 <label>Title</label>
                                 <br />
-                                <TextareaAutosize aria-label="minimum height" onChange={(e) => { contentChange(e.target.value, 'title') }} rowsMin={2} className="form-control"  placeholder="Enter The Title" />
+                                <input aria-label="minimum height" onChange={(e) => { contentChange(e.target.value, 'title') }} rowsMin={2} className="form-control"  placeholder="Enter The Title" />
                             </div>
                             <div className="col-md-6 col-sm-12">
 
