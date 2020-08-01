@@ -191,14 +191,13 @@ const AddNews = () => {
                 )
             } else {
                 paras.pop();
-                setState(prevState => {
-
-                    let temp = { ...prevState };
-                    temp.data = { ...prevState.data };
-                    temp.data.paras = [...prevState.data.paras];
-                    temp.data.paras.pop();
-                    return { ...temp }
-                });
+                
+                    let temp = { ...state };
+                    temp.data = { ...state.data };
+                    temp.data.paras = [...state.data.paras];
+                    temp.data.paras.splice(-1,1);
+                   
+                    setState({temp});
             }
 
         }
@@ -219,9 +218,9 @@ const AddNews = () => {
     }, [])
 
     useEffect(() => {
-
+// return (console.log(state))
         if (state.save === true) {
-            if (state.data.writer === '' || state.data.title === '' || state.data.mainImage === '' || state.data.category.length === 0 || state.data.paras.length === 0) {
+            if (state.data.writer === '' || state.data.title === '' || state.data.mainImage === '' || state.data.category.length === 0 || state.data.paras.length === 0|| state.data.paras[0].content.length === 0) {
                 Swal.fire('Error', 'Please Add All details', 'error');
                 paras = [];
 
@@ -234,12 +233,24 @@ const AddNews = () => {
             } else {
                 setState((prevState) => { return { ...prevState, loading: true } });
                 //save
-                axios.post("save_news", state.data).then(res => {
+
+                let data = {...state.data};
+                
+                   for(let i=data.paras.length-1;i> 0;i--){
+                       console.log(data.paras);
+                         if(data.paras[i].content.length <1){
+                             data.paras.pop();
+                         }
+                   }
+                   console.log(data);
+                axios.post("save_news", data).then(res => {
                     if (res.data.code === 0) {
-                        Swal.fire('Success', 'News Added Successfully', 'success');
+                        Swal.fire('Success', 'News Added Successfully', 'success').then(()=> window.location.reload(false));
                     } else {
                         Swal.fire('Error', res.msg, 'error');
                     }
+
+                    
                     paras = [];
 
                     setState((prevState) => {
@@ -306,7 +317,7 @@ const AddNews = () => {
 
                                 <label>Title</label>
                                 <br />
-                                <input aria-label="minimum height" onChange={(e) => { contentChange(e.target.value, 'title') }} rowsMin={2} className="form-control"  placeholder="Enter The Title" />
+                                <input aria-label="minimum height" onChange={(e) => { contentChange(e.target.value, 'title') }} className="form-control"  placeholder="Enter The Title" />
                             </div>
                             <div className="col-md-6 col-sm-12">
 
@@ -325,7 +336,7 @@ const AddNews = () => {
                                         if(state.data.category.length >= 3 && state.data.category.indexOf(val.category) === -1) {
                                             return (<div style={{ padding: '5px' }} key={val._id}><input disabled type="checkbox" value={val.category} onChange={handleChangeChk} /> {val.category}</div>);
                                         }
-                                        return (<div style={{ padding: '5px' }} key={val._id}><input type="checkbox" value={val.category} onChange={handleChangeChk} /> {val.category}</div>);
+                                        return (<div style={{ padding: '5px' }} key={val._id}><input type="checkbox" value={val.category} onChange={handleChangeChk} /> {val.category.split("-").join(" ")}</div>);
                                     })}
                                     {/* </div> */}
                                 </div>
@@ -347,7 +358,7 @@ const AddNews = () => {
                         })}
                         <br />  <br />
                         <div className="d-flex justify-content-center" >
-                            <button type="button" className="btn btn-secondary" onClick={() => { setState({ ...state, save: true }) }}>Save</button>
+                            <button type="button" className="btn btn-secondary" onClick={() => { setState({ ...state, save: true })}}>Save</button>
                             <button style={{ marginLeft: "1%" }} type="reset" className="btn btn-danger">Clear</button>
                         </div>
                         <br />
@@ -358,4 +369,5 @@ const AddNews = () => {
     )
 }
 
+// 
 export default AddNews;
