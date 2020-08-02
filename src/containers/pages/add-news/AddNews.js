@@ -290,9 +290,9 @@ const AddNews = () => {
                         <div className="row">
                             <div className="col-md-3 col-sm-12">
 
-                                <label>Writer email</label>
+                                <label>Writer Username</label>
                                 <br />
-                                <input id="outlined-basic" placeholder="email" defaultValue="" onChange={(e) => { contentChange(e.target.value, 'writer') }} variant="outlined"  style={{height:"30px"}} />
+                                <input id="outlined-basic" placeholder="Username" defaultValue="" onChange={(e) => { contentChange(e.target.value, 'writer') }} variant="outlined"  style={{height:"30px"}} />
                             </div>
                             <div className="col-md-3 col-sm-12">
 
