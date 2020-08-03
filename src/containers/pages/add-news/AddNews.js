@@ -19,13 +19,14 @@ const AddNews = () => {
     const [state, setState] = useState({
         noOfParas: 0,
         data: {
-            alt_image:'',
-            description:'',
+            alt_image: '',
+            description: '',
             writer: '',
             title: '',
             mainImage: '',
             category: [],
             paras: [],
+            link: ''
 
         },
         save: false,
@@ -79,6 +80,24 @@ const AddNews = () => {
         }, console.log(state));
 
     }
+
+    const addToSave = () => {
+        if (state.data.writer === '' || state.data.title === '' || state.data.mainImage === '' || state.data.category.length === 0 || state.data.paras.length === 0 || state.data.paras[0].content.length === 0) {
+            Swal.fire('Error', 'Please Add All details', 'error');
+            // paras = [];
+
+            // setState((prevState) => {
+            //     let temp = { ...prevState };
+            //     temp.data = { ...prevState.data };
+            //     temp.data.paras = [];
+            //     return { ...temp, loading: false, save: false }
+            // });
+        } else {
+            setState({ ...state, save: true })
+        }
+
+    }
+
 
 
     const handleChangeChk = (e) => {
@@ -138,7 +157,7 @@ const AddNews = () => {
                         <div className="row">
 
                             <div className="col-md-3 col-sm-12">
-                                <label>Sub Title</label>
+                                <label>Sub Title (Optional)</label>
                                 <br />
                                 <TextareaAutosize aria-label="minimum height" rowsMin={2} cols={30} onChange={(e) => paragraphDataChange(e.target.value, 'sub_title', i)} placeholder="Enter The Sub-Title" />
                             </div>
@@ -182,7 +201,7 @@ const AddNews = () => {
                                 />
                             </div>
                             <div className="col-md-3 col-sm-12">
-                                <label>Image</label><br />
+                                <label>Image (Optional)</label><br />
                                 <TextField type="file" onChange={(e) => paragraphImageChange(e, 'image', i)}></TextField>
                             </div>
 
@@ -191,13 +210,13 @@ const AddNews = () => {
                 )
             } else {
                 paras.pop();
-                
-                    let temp = { ...state };
-                    temp.data = { ...state.data };
-                    temp.data.paras = [...state.data.paras];
-                    temp.data.paras.splice(-1,1);
-                   
-                    setState({temp});
+
+                let temp = { ...state };
+                temp.data = { ...state.data };
+                temp.data.paras = [...state.data.paras];
+                temp.data.paras.splice(-1, 1);
+
+                setState({ temp });
             }
 
         }
@@ -218,10 +237,29 @@ const AddNews = () => {
     }, [])
 
     useEffect(() => {
-// return (console.log(state))
+        // return (console.log(state))
         if (state.save === true) {
-            if (state.data.writer === '' || state.data.title === '' || state.data.mainImage === '' || state.data.category.length === 0 || state.data.paras.length === 0|| state.data.paras[0].content.length === 0) {
-                Swal.fire('Error', 'Please Add All details', 'error');
+
+            setState((prevState) => { return { ...prevState, loading: true } });
+            //save
+
+            let data = { ...state.data };
+
+            for (let i = data.paras.length - 1; i > 0; i--) {
+                console.log(data.paras);
+                if (data.paras[i].content.length < 1) {
+                    data.paras.pop();
+                }
+            }
+            console.log(data);
+            axios.post("save_news", data).then(res => {
+                if (res.data.code === 0) {
+                    Swal.fire('Success', 'News Added Successfully', 'success').then(() => window.location.reload(false));
+                } else {
+                    Swal.fire('Error', res.msg, 'error');
+                }
+
+
                 paras = [];
 
                 setState((prevState) => {
@@ -230,38 +268,9 @@ const AddNews = () => {
                     temp.data.paras = [];
                     return { ...temp, loading: false, save: false }
                 });
-            } else {
-                setState((prevState) => { return { ...prevState, loading: true } });
                 //save
+            });
 
-                let data = {...state.data};
-                
-                   for(let i=data.paras.length-1;i> 0;i--){
-                       console.log(data.paras);
-                         if(data.paras[i].content.length <1){
-                             data.paras.pop();
-                         }
-                   }
-                   console.log(data);
-                axios.post("save_news", data).then(res => {
-                    if (res.data.code === 0) {
-                        Swal.fire('Success', 'News Added Successfully', 'success').then(()=> window.location.reload(false));
-                    } else {
-                        Swal.fire('Error', res.msg, 'error');
-                    }
-
-                    
-                    paras = [];
-
-                    setState((prevState) => {
-                        let temp = { ...prevState };
-                        temp.data = { ...prevState.data };
-                        temp.data.paras = [];
-                        return { ...temp, loading: false, save: false }
-                    });
-                    //save
-                });
-            }
 
 
 
@@ -292,55 +301,61 @@ const AddNews = () => {
 
                                 <label>Writer Username</label>
                                 <br />
-                                <input id="outlined-basic" placeholder="Username" defaultValue="" onChange={(e) => { contentChange(e.target.value, 'writer') }} variant="outlined"  style={{height:"30px"}} />
+                                <input id="outlined-basic" placeholder="Username" defaultValue="" onChange={(e) => { contentChange(e.target.value, 'writer') }} variant="outlined" style={{ height: "30px" }} />
                             </div>
                             <div className="col-md-3 col-sm-12">
 
                                 <label>Enter No Of Paragraphs</label>
                                 <br />
-                                <input style={{height:"30px"}}  id="outlined-basic" placeholder="No Of Paragraphs" defaultValue="" onChange={(e) => paraChanged(e.target.value)} variant="outlined" />
+                                <input style={{ height: "30px" }} id="outlined-basic" placeholder="No Of Paragraphs" defaultValue="" onChange={(e) => paraChanged(e.target.value)} variant="outlined" />
                             </div>
 
 
                             <div className="col-md-3 col-sm-12">
                                 <label>Upload Main Image</label> <br />
                                 <Input type="file" onChange={(e) => onImageChange(e, 'mainImage')}></Input>
-                                <br/>
-                              
+                                <br />
+
                             </div>
                             <div className="col-md-3 col-sm-12">
-                            <label>Alt Image</label> <br />
-                            <input type="text" placeholder="Alt Image" onChange={(e) => { contentChange(e.target.value, 'alt_image') }}/>
-                                </div>
+                                <label>Alt Image</label> <br />
+                                <input type="text" placeholder="Alt Image" onChange={(e) => { contentChange(e.target.value, 'alt_image') }} />
+                            </div>
 
                             <div className="col-md-5 col-sm-12">
 
                                 <label>Title</label>
                                 <br />
-                                <input aria-label="minimum height" onChange={(e) => { contentChange(e.target.value, 'title') }} className="form-control"  placeholder="Enter The Title" />
+                                <input aria-label="minimum height" onChange={(e) => { contentChange(e.target.value, 'title') }} className="form-control" placeholder="Enter The Title" />
                             </div>
                             <div className="col-md-6 col-sm-12">
 
-<label>Description</label>
-<br />
-<TextareaAutosize aria-label="minimum height" onChange={(e) => { contentChange(e.target.value, 'description') }} rowsMin={2} className="form-control"  placeholder="Enter The Description" />
-</div>
-                          {state.data.category.length < 4?  <div className="col-md-7 col-sm-12">
+                                <label>Description</label>
+                                <br />
+                                <TextareaAutosize aria-label="minimum height" onChange={(e) => { contentChange(e.target.value, 'description') }} rowsMin={2} className="form-control" placeholder="Enter The Description" />
+                            </div>
+                            <div className="col-md-5 col-sm-12">
+
+                                <label>Custom Link (Optional)</label>
+                                <br />
+                                <input onChange={(e) => { contentChange(e.target.value, 'link') }} className="form-control" placeholder="Link" />
+                            </div>
+                            {state.data.category.length < 4 ? <div className="col-md-7 col-sm-12">
 
                                 <label>Category</label>
                                 <br />
                                 <div className="row">
                                     {/* <div className="col-md-12 col-sm-12">  */}
                                     {state.categoryList.map((val, index) => {
-                                       
-                                        if(state.data.category.length >= 3 && state.data.category.indexOf(val.category) === -1) {
+
+                                        if (state.data.category.length >= 3 && state.data.category.indexOf(val.category) === -1) {
                                             return (<div style={{ padding: '5px' }} key={val._id}><input disabled type="checkbox" value={val.category} onChange={handleChangeChk} /> {val.category}</div>);
                                         }
                                         return (<div style={{ padding: '5px' }} key={val._id}><input type="checkbox" value={val.category} onChange={handleChangeChk} /> {val.category.split("-").join(" ")}</div>);
                                     })}
                                     {/* </div> */}
                                 </div>
-                            </div> : '' }
+                            </div> : ''}
                         </div>
 
                         <div>
@@ -358,7 +373,7 @@ const AddNews = () => {
                         })}
                         <br />  <br />
                         <div className="d-flex justify-content-center" >
-                            <button type="button" className="btn btn-secondary" onClick={() => { setState({ ...state, save: true })}}>Save</button>
+                            <button type="button" className="btn btn-secondary" onClick={addToSave}>Save</button>
                             <button style={{ marginLeft: "1%" }} type="reset" className="btn btn-danger">Clear</button>
                         </div>
                         <br />
