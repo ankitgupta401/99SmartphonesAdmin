@@ -301,13 +301,13 @@ const AddNews = () => {
 
                                 <label>Writer Username</label>
                                 <br />
-                                <input id="outlined-basic" placeholder="Username" defaultValue="" onChange={(e) => { contentChange(e.target.value, 'writer') }} variant="outlined" style={{ height: "30px" }} />
+                                <input id="outlined-basic" className="form-control" placeholder="Username" defaultValue="" onChange={(e) => { contentChange(e.target.value, 'writer') }} variant="outlined"  />
                             </div>
                             <div className="col-md-3 col-sm-12">
 
                                 <label>Enter No Of Paragraphs</label>
                                 <br />
-                                <input style={{ height: "30px" }} id="outlined-basic" placeholder="No Of Paragraphs" defaultValue="" onChange={(e) => paraChanged(e.target.value)} variant="outlined" />
+                                <input style={{ height: "30px" }} id="outlined-basic" className="form-control" placeholder="No Of Paragraphs" defaultValue="" onChange={(e) => paraChanged(e.target.value)} variant="outlined" />
                             </div>
 
 
@@ -319,7 +319,7 @@ const AddNews = () => {
                             </div>
                             <div className="col-md-3 col-sm-12">
                                 <label>Alt Image</label> <br />
-                                <input type="text" placeholder="Alt Image" onChange={(e) => { contentChange(e.target.value, 'alt_image') }} />
+                                <input type="text" className="form-control" placeholder="Alt Image" onChange={(e) => { contentChange(e.target.value, 'alt_image') }} />
                             </div>
 
                             <div className="col-md-5 col-sm-12">
