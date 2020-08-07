@@ -272,7 +272,7 @@ export const AddBlog = () => {
                             </div>
                             <div className="form-group">
                                 <label htmlFor="inputAddress">Title</label>
-                                <textarea type="text" value={state.data.title} className="form-control" onChange={(e) => paragraphDataChange(e, 'title')} id="inputAddress" placeholder="Tilte" ></textarea>
+                                <input type="text" value={state.data.title} className="form-control" onChange={(e) => paragraphDataChange(e, 'title')} id="inputAddress" placeholder="Tilte" />
                             </div>
                             <div className="form-group">
                                 <label htmlFor="inputAddress2">Description</label>
