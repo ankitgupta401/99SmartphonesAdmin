@@ -2,9 +2,8 @@ import React, { useState, useEffect } from 'react'
 
 import TextareaAutosize from '@material-ui/core/TextareaAutosize';
 import { Card, TextField, Input } from '@material-ui/core';
-import CKEditor from '@ckeditor/ckeditor5-react';
-// import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
-import DecoupledEditor from '@ckeditor/ckeditor5-build-decoupled-document';
+
+import ReactQuill from 'react-quill';
 import { css } from "@emotion/core";
 import CircleLoader from "react-spinners/CircleLoader";
 import axios from '../../../axios-url';
@@ -14,6 +13,54 @@ const override = css`
   margin: 0 auto;
   border-color: red;
 `;
+
+
+let modules = {
+    toolbar: {
+        container: [
+            ["bold", "italic", "underline", "strike", "blockquote","code" , "header"],
+            [{ header: [] }],
+            [{ size: ["small", false, "large", "huge"] }, { color: [] }],
+            [{font:[]}],
+           
+            [{background:[]}],
+            [
+                { list: "ordered" },
+                { list: "bullet" },
+                { indent: "-1" },
+                { indent: "+1" },
+                { align: [] }
+            ],
+            ["link", "image", "video"],
+            ["clean"]
+        ],
+        //   handlers: { image: this.imageHandler }
+    },
+    clipboard: { matchVisual: false }
+};
+
+let formats = [
+    "header",
+    "bold",
+    "italic",
+    "underline",
+    "strike",
+    "blockquote",
+    "size",
+    "color",
+    "list",
+    "bullet",
+    "indent",
+    "link",
+    "image",
+    "video",
+    "align",
+    "font",
+    "background",
+    "code"
+];
+
+
 let paras = [];
 const AddNews = () => {
     const [state, setState] = useState({
@@ -69,17 +116,19 @@ const AddNews = () => {
     }
 
     const paragraphDataChange = (data, place, index) => {
+        console.log(data, index, place ,state.data.paras[index])
+
 
         setState(prevState => {
-
+             console.log(prevState)
             let temp = { ...prevState };
             temp.data = { ...prevState.data };
             temp.data.paras = [...prevState.data.paras];
             temp.data.paras[index][place] = data;
             return temp
-        }, console.log(state));
-
-    }
+        });
+    
+}
 
     const addToSave = () => {
         if (state.data.writer === '' || state.data.title === '' || state.data.mainImage === '' || state.data.category.length === 0 || state.data.paras.length === 0 || state.data.paras[0].content.length === 0) {
@@ -101,7 +150,7 @@ const AddNews = () => {
 
 
     const handleChangeChk = (e) => {
-        console.log(e.target.value);
+    
         let temp = { ...state };
         temp.data = { ...state.data };
         temp.data.category = [...state.data.category];
@@ -119,7 +168,7 @@ const AddNews = () => {
     }
     const paragraphImageChange = (e, place, index) => {
         setState((prevState) => { return { ...prevState, loading: true } });
-        console.log(e.target.files[0], place);
+      
         let formData = new FormData();
         formData.append('file', e.target.files[0]);
         axios({
@@ -139,16 +188,45 @@ const AddNews = () => {
         });
 
     }
+
+    const setPara = (e,len) => {
+       let arr= [];
+          
+     
+            for(let i=0; i< len;i++){
+                arr.push( {sub_title: '', content: '', image: '' })
+            }
+           
+             setState((prevState) => {
+               
+                let temp = { ...prevState , noOfParas : e};
+                temp.data = { ...prevState.data };
+    
+                temp.data.paras = [...prevState.data.paras,...arr]
+               
+              console.log(temp);
+                return temp;
+            });
+           
+        
+      
+    }
+
+
     const paraChanged = (e) => {
-        console.log(e);
+       
         if (!e) {
             return;
         }
         let length = paras.length > e ? paras.length - e : e - paras.length;
         let addOrSub = paras.length > e ? 1 : 0; // 1 =sub , 0 = add
         console.log(state, 'length', length, 'addor sub', addOrSub, paras);
+        if(addOrSub === 0){
+            setPara(e,length);
+        }
         for (let i = 0; i < length; i++) {
             if (addOrSub === 0) {
+                 
                 paras.push(
                     <div>
                         <br />
@@ -165,40 +243,18 @@ const AddNews = () => {
 
                                 <label>Para {paras.length + 1} </label>
                                 <br />
-                                {/* <TextareaAutosize aria-label="minimum height" rowsMin={4} cols={60} placeholder="Enter The Title" /> */}
-                                <CKEditor
-                                    editor={DecoupledEditor}
-                                    data=""
-                                    onInit={editor => {
-                                        // You can store the "editor" and use when it is needed.
-                                        console.log('Editor is ready to use!', editor);
-                                        editor.ui.getEditableElement().parentElement.insertBefore(
-                                            editor.ui.view.toolbar.element,
-                                            editor.ui.getEditableElement()
-                                        );
-                                        setState(prevState => {
-                                            let temp = { ...prevState };
-                                            temp.data = { ...prevState.data };
-                                            temp.data.paras = [...prevState.data.paras];
-                                            temp.data.paras.push({ sub_title: '', content: editor.getData(), image: '' })
-
-                                            return temp;
-                                        })
 
 
-                                    }}
-                                    onChange={(event, editor) => {
-                                        const data = editor.getData();
-                                        // console.log({ event, editor, data });
-                                        paragraphDataChange(data, 'content', i);
-                                    }}
-                                    onBlur={(event, editor) => {
-                                        console.log('Blur.', editor);
-                                    }}
-                                    onFocus={(event, editor) => {
-                                        console.log('Focus.', editor);
-                                    }}
-                                />
+
+                                <ReactQuill modules={modules}
+                                    formats={formats}
+                                    onChange={(e) => {
+                                      
+                                        
+                                        paragraphDataChange(e, 'content', i);
+                                    }} />
+
+
                             </div>
                             <div className="col-md-3 col-sm-12">
                                 <label>Image (Optional)</label><br />
@@ -211,22 +267,22 @@ const AddNews = () => {
             } else {
                 paras.pop();
 
-                let temp = { ...state };
+                let temp = { ...state ,  noOfParas: +e};
                 temp.data = { ...state.data };
                 temp.data.paras = [...state.data.paras];
                 temp.data.paras.splice(-1, 1);
 
-                setState({ temp });
+                setState({ ...temp });
             }
 
         }
-        setState(() => { return { ...state, noOfParas: e } });
+  
     }
     useEffect(() => {
         //paraChanged(3)
         axios.post("/common_get_with_table_name",
             { table: 'news_category_list', data: {} }).then(res => {
-                console.log(res);
+                
                 setState(prevState => {
                     return { ...prevState, categoryList: res.data.result }
                 });
@@ -237,7 +293,7 @@ const AddNews = () => {
     }, [])
 
     useEffect(() => {
-        // return (console.log(state))
+       
         if (state.save === true) {
 
             setState((prevState) => { return { ...prevState, loading: true } });
@@ -301,7 +357,7 @@ const AddNews = () => {
 
                                 <label>Writer Username</label>
                                 <br />
-                                <input id="outlined-basic" className="form-control" placeholder="Username" defaultValue="" onChange={(e) => { contentChange(e.target.value, 'writer') }} variant="outlined"  />
+                                <input id="outlined-basic" className="form-control" placeholder="Username" defaultValue="" onChange={(e) => { contentChange(e.target.value, 'writer') }} variant="outlined" />
                             </div>
                             <div className="col-md-3 col-sm-12">
 
@@ -357,15 +413,18 @@ const AddNews = () => {
                                 </div>
                             </div> : ''}
                         </div>
-
+                     
                         <div>
                             <br />
                             <h4>Enter The Main Content</h4>
 
                         </div>
+                       
                         {paras.map((val, i) => {
+                             
                             return (
                                 <span key={i}>
+                                   
                                     {val}
                                 </span>
 
