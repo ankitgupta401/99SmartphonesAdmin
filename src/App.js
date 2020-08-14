@@ -5,6 +5,7 @@ import AddProducts from './containers/pages/add-products/addProducts';
 import AddNews from './containers/pages/add-news/AddNews';
 import {  Route , Switch} from "react-router-dom";
 import { AddBlog } from './containers/pages/add-blog/AddBlog';
+import { Backlinks } from './containers/pages/request-backlinks/Backlinks';
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
       <Route path="/add-products" component={AddProducts} />
       <Route path="/add-news" component={AddNews} />
       <Route path="/add-blog" component={AddBlog} />
+      <Route path="/Mail" component={Backlinks} />
     </Switch>
 
 
