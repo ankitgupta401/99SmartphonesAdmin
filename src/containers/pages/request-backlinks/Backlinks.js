@@ -88,7 +88,7 @@ export const Backlinks = () => {
                             </div>
                             <div className="col-md-4">
                                 <label>
-                                    Upload Excel For Backlinks:
+                                    Upload Excel:
                 <input type="file" onChange={handleFileUpload} accept="application/vnd.ms-excel"></input>
                                 </label>
                             </div>
