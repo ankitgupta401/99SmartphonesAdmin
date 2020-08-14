@@ -81,9 +81,10 @@ export const Backlinks = () => {
                                 <label>
                                     Download Excel Format:
                                      <br />
-                                    <button type="button" onClick={() => { window.location.href = "http://localhost:3000/mail/file.xls"; }}>Download</button>
+                                    <button type="button" onClick={() => { window.location.href = "https://blog.99smartphones.in/mail/file.xls"; }}>Download</button>
                                 </label>
                                 {/* https://blog.99smartphones.in/mail/file.xls */}
+                                {/* http://localhost:3000/mail/file.xls */}
                             </div>
                             <div className="col-md-4">
                                 <label>
