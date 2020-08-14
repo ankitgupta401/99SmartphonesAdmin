@@ -11,9 +11,12 @@ const override = css`
 `;
 
 export const Backlinks = () => {
+   
     const [loading, setLoading] = React.useState(false);
     const handleFileUpload = (e) => {
-       
+       if(!e.target.files[0]){
+           return;
+       }
         let formData = new FormData();
         formData.append('file', e.target.files[0]);
         console.log(formData.has('file'));
@@ -25,6 +28,7 @@ export const Backlinks = () => {
             headers: { 'Content-Type': 'multipart/form-data' }
         }).then(res => {
             setLoading(false);
+          
             if (res.data.code == 0) {
                 if(res.data.result.length > 0){
                     let errors = '';
@@ -89,7 +93,7 @@ export const Backlinks = () => {
                             <div className="col-md-4">
                                 <label>
                                     Upload Excel:
-                <input type="file" onChange={handleFileUpload} accept="application/vnd.ms-excel"></input>
+                <input type="file" onClick={e => (e.target.value = null)} onChange={handleFileUpload} accept="application/vnd.ms-excel"></input>
                                 </label>
                             </div>
                         </div>
