@@ -29,7 +29,7 @@ export const Backlinks = () => {
         }).then(res => {
             setLoading(false);
           
-            if (res.data.code == 0) {
+            if (res.data.code === 0) {
                 if(res.data.result.length > 0){
                     let errors = '';
              
@@ -53,7 +53,44 @@ export const Backlinks = () => {
     }
 
 
+const handleFileUploadBroken =(e) => {
+    if(!e.target.files[0]){
+        return;
+    }
+     let formData = new FormData();
+     formData.append('file', e.target.files[0]);
+     console.log(formData.has('file'));
+     setLoading(true);
+     axios({
+         method: 'post',
+         url: 'send_email_for_broken_links',
+         data: formData,
+         headers: { 'Content-Type': 'multipart/form-data' }
+     }).then(res => {
+         setLoading(false);
+       
+         if (res.data.code === 0) {
+             if(res.data.result.length > 0){
+                 let errors = '';
+          
+                 for(let i=0; i<  res.data.result.length;i++){
+                     errors +=  res.data.result[i] + '<br/>';
+                 }
+                  Swal.fire( res.data.msg, errors, 'warning')
+             } else {
 
+                 Swal.fire('Success', res.data.msg, 'success')
+             }
+         } else {
+             let errors = '';
+          
+            for(let i=0; i<  res.data.result.length;i++){
+                errors +=  res.data.result[i] + '\n';
+            }
+             Swal.fire( res.data.msg, errors, 'error')
+         }
+     })
+}
     return (
         <div>
 
@@ -74,6 +111,7 @@ export const Backlinks = () => {
                 <br />
                 <br />
                 <div className="container">
+                    <div className="row">
                     <div className="col-md-6">
                         <div className="row">
                             <h5>For Backlinks Request</h5>
@@ -85,7 +123,7 @@ export const Backlinks = () => {
                                 <label>
                                     Download Excel Format:
                                      <br />
-                                    <button type="button" onClick={() => { window.location.href = "https://blog.99smartphones.in/mail/file.xls"; }}>Download</button>
+                                    <button type="button" onClick={() => { window.location.href = "https://blog.99smartphones.in/mail/file_back_link.xls"; }}>Download</button>
                                 </label>
                                 {/* https://blog.99smartphones.in/mail/file.xls */}
                                 {/* http://localhost:3000/mail/file.xls */}
@@ -97,6 +135,33 @@ export const Backlinks = () => {
                                 </label>
                             </div>
                         </div>
+                    </div>
+
+                    <div className="col-md-6">
+                        <div className="row">
+                            <h5>For Broken Links Request</h5>
+                        </div>
+                        <div className="row">
+
+
+                            <div className="col-md-4">
+                                <label>
+                                    Download Excel Format:
+                                     <br />
+                                    <button type="button" onClick={() => { window.location.href = "https://blog.99smartphones.in/mail/file_broken_link.xls"; }}>Download</button>
+                                </label>
+                                {/* https://blog.99smartphones.in/mail/file.xls */}
+                                {/* http://localhost:3000/mail/file.xls */}
+                            </div>
+                            <div className="col-md-4">
+                                <label>
+                                    Upload Excel:
+                <input type="file" onClick={e => (e.target.value = null)} onChange={handleFileUploadBroken} accept="application/vnd.ms-excel"></input>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
                     </div>
                 </div>
             </Card>
