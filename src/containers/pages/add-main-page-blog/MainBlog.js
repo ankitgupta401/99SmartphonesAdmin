@@ -213,6 +213,11 @@ export const MainBlog = () => {
 
 
                 <Card>
+                <div>
+                        <br />
+                        <h4 style={{ paddingLeft: "6%" }}>Check Query And Sorting</h4>
+                        <br />
+                    </div>
                     <div className="container">
                         <form onSubmit={handleSubmit2} >
 
