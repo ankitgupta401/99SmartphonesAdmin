@@ -11,3 +11,32 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+.property-div {
+  display: flex;
+  margin-top: 10px;
+}
+
+.property-div p {
+  margin: 0px;
+}
+
+.property-img {
+  width: 40px;
+  height: 40px;
+  margin-right: 10px;
+}
+
+.blog-list-header {
+  background-color: #e0dada50;
+}
+
+.blog-list-header strong {
+  padding: 0px 10px;
+}
+
+.blog-list-header label {
+  background-color: rgb(67, 3, 139);
+  color: #fff;
+  padding: 3px 10px;
+}
+

@@ -6,7 +6,7 @@ import AddNews from './containers/pages/add-news/AddNews';
 import {  Route , Switch} from "react-router-dom";
 import { AddBlog } from './containers/pages/add-blog/AddBlog';
 import { Backlinks } from './containers/pages/request-backlinks/Backlinks';
-
+import {MainBlog} from './containers/pages/add-main-page-blog/MainBlog';
 function App() {
   return (
  
@@ -18,6 +18,7 @@ function App() {
       <Route path="/add-products" component={AddProducts} />
       <Route path="/add-news" component={AddNews} />
       <Route path="/add-blog" component={AddBlog} />
+      <Route path="/add-blog-main-page" component={MainBlog} />
       <Route path="/Mail" component={Backlinks} />
     </Switch>
 
