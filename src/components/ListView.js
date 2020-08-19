@@ -137,16 +137,13 @@ const ListView = (props) => {
         </div>
         <div style={{display:"flex"}}>
           <div className="col-6">
+          <br/>
             <h5>
               Price:{" "}
               {"Rs. " + props.data.productBaseInfoV1.flipkartSpecialPrice.amount}
             </h5>
           </div>
-          <div className="col-6">
-            <a className="btn buy-btn" href={props.data.productBaseInfoV1.productUrl} rel="noopener noreferrer nofollow" target="_blank">
-              Buy On Flipkart
-            </a>
-          </div>
+     <br/>
         </div>
         <div className="desc-div">
           <p>{props.data.productBaseInfoV1.productDescription}</p>

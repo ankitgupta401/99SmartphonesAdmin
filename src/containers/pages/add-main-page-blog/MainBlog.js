@@ -239,15 +239,22 @@ export const MainBlog = () => {
 
                             </div>
                         </form>
-                        <div className="col-md-8">
-                            {state.list.map((val, i) => {
-                                return <ListView data={val} index={i + 1} />
-                            })}
-                        </div>
+                       
                     </div>
                     <br />  <br />
                 </Card>
                 <br />
+                <div className="d-flex justify-content-center">
+                <div className="col-md-8">
+                            {state.list.map((val, i) => {
+                                return (<><Card key={i}>
+                                    <div className="container"> <ListView data={val} index={i + 1} /></div>
+                                 <br /> <br />
+                                </Card>  <br /><br /></>)
+                            })}
+                        </div>
+                        </div>
+                        <br />
                 <Card>
 
 
