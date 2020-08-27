@@ -135,6 +135,8 @@ export const MainBlog = () => {
                 setState(prevState => {
                     return { ...prevState, loading: true }
                 })
+                dataToTransfer.query = JSON.stringify(dataToTransfer.query);
+                dataToTransfer.sort = JSON.stringify(dataToTransfer.sort);
                 axios.post("save_post_main_blog", dataToTransfer).then(res => {
                     if (res.data.code === 0) {
                         Swal.fire('Saved', 'Saved Successfully', 'success')
