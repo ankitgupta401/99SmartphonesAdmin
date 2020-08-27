@@ -90,9 +90,8 @@ export const MainBlog = () => {
                 setState(prevState => {
                     return { ...prevState, loading: true }
                 })
-                dataToTransfer.query = JSON.stringify(dataToTransfer.query)
-                dataToTransfer.sort = JSON.stringify(dataToTransfer.sort)
-                axios.post("check_query_and_sort", { sort: dataToTransfer.sort, query: dataToTransfer.query, no_of_products: dataToTransfer.no_of_products }).then(res => {
+   
+                axios.post("check_query_and_sort", { sort: JSON.stringify(dataToTransfer.sort), query:JSON.stringify(dataToTransfer.query), no_of_products: dataToTransfer.no_of_products }).then(res => {
                     setState(prevState => {
                         return { ...prevState, loading: false }
                     })
