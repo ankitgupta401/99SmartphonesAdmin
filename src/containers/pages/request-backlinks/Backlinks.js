@@ -9,7 +9,7 @@ const override = css`
   margin: 0 auto;
   border-color: red;
 `;
-
+const baseUrl = require("../../../cred.json").baseUrl;
 export const Backlinks = () => {
    
     const [loading, setLoading] = React.useState(false);
@@ -123,9 +123,9 @@ const handleFileUploadBroken =(e) => {
                                 <label>
                                     Download Excel Format:
                                      <br />
-                                    <button type="button" onClick={() => { window.location.href = "https://blog.99smartphones.in/mail/file_back_link.xls"; }}>Download</button>
+                                    <button type="button" onClick={() => { window.location.href = baseUrl+"/mail/file_back_link.xls"; }}>Download</button>
                                 </label>
-                                {/* https://blog.99smartphones.in/mail/file.xls */}
+                                {/*baseUrl+ /mail/file.xls */}
                                 {/* http://localhost:3000/mail/file.xls */}
                             </div>
                             <div className="col-md-4">
@@ -148,9 +148,9 @@ const handleFileUploadBroken =(e) => {
                                 <label>
                                     Download Excel Format:
                                      <br />
-                                    <button type="button" onClick={() => { window.location.href = "https://blog.99smartphones.in/mail/file_broken_link.xls"; }}>Download</button>
+                                    <button type="button" onClick={() => { window.location.href = baseUrl+"/mail/file_broken_link.xls"; }}>Download</button>
                                 </label>
-                                {/* https://blog.99smartphones.in/mail/file.xls */}
+                                {/*baseUrl+ /mail/file.xls */}
                                 {/* http://localhost:3000/mail/file.xls */}
                             </div>
                             <div className="col-md-4">

@@ -1,8 +1,9 @@
 import axios from 'axios';
+const baseURL = require("./cred.json").baseUrl
 
 const instance = axios.create({
-    baseURL: 'https://blog.99smartphones.in/api/common/'
-    // baseURL:'http://localhost:3000/api/common/'
+   // baseURL: 'https://blog.99smartphones.in/api/common/'
+     baseURL: baseURL + '/api/common/'
 });
 
 export default instance;
