@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react'
 
 import TextareaAutosize from '@material-ui/core/TextareaAutosize';
-import { Card, TextField, Input } from '@material-ui/core';
+import { Card } from '@material-ui/core';
 
 import ReactQuill from 'react-quill';
 import { css } from "@emotion/core";
 import CircleLoader from "react-spinners/CircleLoader";
 import axios from '../../../axios-url';
 import Swal from 'sweetalert2';
+
 const override = css`
   display: block;
   margin: 0 auto;
@@ -61,10 +62,9 @@ let formats = [
 ];
 
 
-let paras = [];
 const AddNews = () => {
     const [state, setState] = useState({
-        noOfParas: 0,
+       
         data: {
             alt_image: '',
             description: '',
@@ -72,11 +72,14 @@ const AddNews = () => {
             title: '',
             mainImage: '',
             category: [],
-            paras: [],
+            paras: [{
+                content: '',
+                sub_title:'',
+                image: ''
+            }],
             link: ''
 
         },
-        save: false,
         loading: false,
         categoryList: []
 
@@ -130,19 +133,54 @@ const AddNews = () => {
     
 }
 
-    const addToSave = () => {
-        if (state.data.writer === '' || state.data.title === '' || state.data.mainImage === '' || state.data.category.length === 0 || state.data.paras.length === 0 || state.data.paras[0].content.length === 0) {
+    const addToSave =async () => {
+        setState((prevState) => { return { ...prevState, loading: true } });
+        
+   
+        if (state.data.writer === '' || state.data.title === '' || state.data.mainImage === '' || state.data.category.length === 0 || state.data.paras.length === 0 || state.data.paras[0].content === '') {
             Swal.fire('Error', 'Please Add All details', 'error');
-            // paras = [];
-
-            // setState((prevState) => {
-            //     let temp = { ...prevState };
-            //     temp.data = { ...prevState.data };
-            //     temp.data.paras = [];
-            //     return { ...temp, loading: false, save: false }
+            setState((prevState) => { return { ...prevState, loading: false } });
             // });
         } else {
-            setState({ ...state, save: true })
+            let isWriter = await axios.post("/get_user_by_username", { username: state.data.writer})
+            console.log(isWriter.data.code)
+            if(isWriter.data.code === 0){
+                axios.post("save_news", state.data).then(res => {
+                    if (res.data.code === 0) {
+                        Swal.fire('Success', 'News Added Successfully', 'success').then(() => window.location.reload(false));
+
+    
+                        setState((prevState) => {
+                            let temp = { ...prevState };
+                            temp.data = { ...prevState.data };
+                            temp.data.paras =  [{
+                                content: '',
+                                sub_title:'',
+                                image: ''
+                            }];
+                            return { ...temp, loading: false}
+                        });
+                        //save
+                    } else {
+                        Swal.fire('Error', res.msg, 'error');
+                        setState((prevState) => {
+                            let temp = { ...prevState };
+                            temp.data = { ...prevState.data };
+                            return { ...temp, loading: false }
+                        });
+                    }
+    
+    
+          
+                });
+            } else {
+                Swal.fire('User Does Not Exist', 'Please Check Your Username', 'error');
+                setState((prevState) => { return { ...prevState, loading: false } });
+
+            }
+          
+
+
         }
 
     }
@@ -166,118 +204,8 @@ const AddNews = () => {
 
         setState({ ...temp });
     }
-    const paragraphImageChange = (e, place, index) => {
-        setState((prevState) => { return { ...prevState, loading: true } });
-      
-        let formData = new FormData();
-        formData.append('file', e.target.files[0]);
-        axios({
-            method: 'post',
-            url: 'upload_news_image',
-            data: formData,
-            headers: { 'Content-Type': 'multipart/form-data' }
-        }).then(res => {
-            setState(prevState => {
-                let temp = { ...prevState };
-                temp.data = { ...prevState.data };
-                temp.data.paras = [...prevState.data.paras];
-                temp.data.paras[index][place] = res.data.result;
-                temp.loading = false;
-                return temp;
-            })
-        });
 
-    }
-
-    const setPara = (e,len) => {
-       let arr= [];
-          
-     
-            for(let i=0; i< len;i++){
-                arr.push( {sub_title: '', content: '', image: '' })
-            }
-           
-             setState((prevState) => {
-               
-                let temp = { ...prevState , noOfParas : e};
-                temp.data = { ...prevState.data };
-    
-                temp.data.paras = [...prevState.data.paras,...arr]
-               
-              console.log(temp);
-                return temp;
-            });
-           
-        
-      
-    }
-
-
-    const paraChanged = (e) => {
-       
-        if (!e) {
-            return;
-        }
-        let length = paras.length > e ? paras.length - e : e - paras.length;
-        let addOrSub = paras.length > e ? 1 : 0; // 1 =sub , 0 = add
-        console.log(state, 'length', length, 'addor sub', addOrSub, paras);
-        if(addOrSub === 0){
-            setPara(e,length);
-        }
-        for (let i = 0; i < length; i++) {
-            if (addOrSub === 0) {
-                 
-                paras.push(
-                    <div>
-                        <br />
-                        <h5>Paragraph {paras.length + 1}</h5>
-                        <br />
-                        <div className="row">
-
-                            <div className="col-md-3 col-sm-12">
-                                <label>Sub Title (Optional)</label>
-                                <br />
-                                <TextareaAutosize aria-label="minimum height" rowsMin={2} cols={30} onChange={(e) => paragraphDataChange(e.target.value, 'sub_title', i)} placeholder="Enter The Sub-Title" />
-                            </div>
-                            <div className="col-md-6 col-sm-12">
-
-                                <label>Para {paras.length + 1} </label>
-                                <br />
-
-
-
-                                <ReactQuill modules={modules}
-                                    formats={formats}
-                                    onChange={(e) => {
-                                      
-                                        
-                                        paragraphDataChange(e, 'content', i);
-                                    }} />
-
-
-                            </div>
-                            <div className="col-md-3 col-sm-12">
-                                <label>Image (Optional)</label><br />
-                                <TextField type="file" onChange={(e) => paragraphImageChange(e, 'image', i)}></TextField>
-                            </div>
-
-                        </div>
-                    </div>
-                )
-            } else {
-                paras.pop();
-
-                let temp = { ...state ,  noOfParas: +e};
-                temp.data = { ...state.data };
-                temp.data.paras = [...state.data.paras];
-                temp.data.paras.splice(-1, 1);
-
-                setState({ ...temp });
-            }
-
-        }
   
-    }
     useEffect(() => {
         //paraChanged(3)
         axios.post("/common_get_with_table_name",
@@ -287,51 +215,10 @@ const AddNews = () => {
                     return { ...prevState, categoryList: res.data.result }
                 });
             })
-        return () => {
-            paras = [];
-        }
+     
     }, [])
 
-    useEffect(() => {
-       
-        if (state.save === true) {
 
-            setState((prevState) => { return { ...prevState, loading: true } });
-            //save
-
-            let data = { ...state.data };
-
-            for (let i = data.paras.length - 1; i > 0; i--) {
-                console.log(data.paras);
-                if (data.paras[i].content.length < 1) {
-                    data.paras.pop();
-                }
-            }
-            console.log(data);
-            axios.post("save_news", data).then(res => {
-                if (res.data.code === 0) {
-                    Swal.fire('Success', 'News Added Successfully', 'success').then(() => window.location.reload(false));
-                } else {
-                    Swal.fire('Error', res.msg, 'error');
-                }
-
-
-                paras = [];
-
-                setState((prevState) => {
-                    let temp = { ...prevState };
-                    temp.data = { ...prevState.data };
-                    temp.data.paras = [];
-                    return { ...temp, loading: false, save: false }
-                });
-                //save
-            });
-
-
-
-
-        }
-    }, [state.save])
 
     return (
         <Card>
@@ -343,7 +230,7 @@ const AddNews = () => {
                     loading={state.loading}
                 />
             </div>
-            {!state.save ? <div>
+            <div>
 
                 <div>
                     <br />
@@ -351,52 +238,49 @@ const AddNews = () => {
                     <br />
                 </div>
                 <div  >
-                    <form style={{ paddingLeft: "10%" }} noValidate autoComplete="off">
+                   
+                    <form  style={{ display: !state.loading ? 'block' : 'none' , paddingLeft: "10%"  }} noValidate autoComplete="off">
                         <div className="row">
-                            <div className="col-md-3 col-sm-12">
+                        <div className="col-md-10 col-sm-12">
+
+                                <label>Title</label>
+                                <br />
+                                <input aria-label="minimum height" defaultValue={state.data.title} onChange={(e) => { contentChange(e.target.value, 'title') }} className="form-control" placeholder="Enter The Title" />
+                                </div>
+                                <br />
+                            <div className="col-md-4 col-sm-12">
 
                                 <label>Writer Username</label>
                                 <br />
-                                <input id="outlined-basic" className="form-control" placeholder="Username" defaultValue="" onChange={(e) => { contentChange(e.target.value, 'writer') }} variant="outlined" />
+                                <input id="outlined-basic" className="form-control" placeholder="Username" defaultValue={state.data.writer} onChange={(e) => { contentChange(e.target.value, 'writer') }} variant="outlined" />
                             </div>
-                            <div className="col-md-3 col-sm-12">
-
-                                <label>Enter No Of Paragraphs</label>
-                                <br />
-                                <input style={{ height: "30px" }} id="outlined-basic" className="form-control" placeholder="No Of Paragraphs" defaultValue="" onChange={(e) => paraChanged(e.target.value)} variant="outlined" />
-                            </div>
-
+                   
 
                             <div className="col-md-3 col-sm-12">
                                 <label>Upload Main Image</label> <br />
-                                <Input type="file" onChange={(e) => onImageChange(e, 'mainImage')}></Input>
+                                <input type="file" accept="image/*"  onChange={(e) => onImageChange(e, 'mainImage')} />
                                 <br />
 
                             </div>
                             <div className="col-md-3 col-sm-12">
                                 <label>Alt Image</label> <br />
-                                <input type="text" className="form-control" placeholder="Alt Image" onChange={(e) => { contentChange(e.target.value, 'alt_image') }} />
+                                <input type="text" className="form-control" defaultValue={state.data.alt_image}  placeholder="Alt Image" onChange={(e) => { contentChange(e.target.value, 'alt_image') }} />
                             </div>
 
-                            <div className="col-md-5 col-sm-12">
-
-                                <label>Title</label>
-                                <br />
-                                <input aria-label="minimum height" onChange={(e) => { contentChange(e.target.value, 'title') }} className="form-control" placeholder="Enter The Title" />
-                            </div>
-                            <div className="col-md-6 col-sm-12">
+                      
+                            <div className="col-md-10 col-sm-12">
 
                                 <label>Description</label>
                                 <br />
-                                <TextareaAutosize aria-label="minimum height" onChange={(e) => { contentChange(e.target.value, 'description') }} rowsMin={2} className="form-control" placeholder="Enter The Description" />
+                                <TextareaAutosize aria-label="minimum height" defaultValue={state.data.description} onChange={(e) => { contentChange(e.target.value, 'description') }} rowsMin={2} className="form-control" placeholder="Enter The Description" />
                             </div>
                             <div className="col-md-5 col-sm-12">
 
                                 <label>Custom Link (Optional)</label>
                                 <br />
-                                <input onChange={(e) => { contentChange(e.target.value, 'link') }} className="form-control" placeholder="Link" />
+                                <input onChange={(e) => { contentChange(e.target.value, 'link') }}  defaultValue={state.data.link} className="form-control" placeholder="Link" />
                             </div>
-                            {state.data.category.length < 4 ? <div className="col-md-7 col-sm-12">
+                            {state.data.category.length < 4 ? <div className="col-md-5 col-sm-12">
 
                                 <label>Category</label>
                                 <br />
@@ -405,9 +289,9 @@ const AddNews = () => {
                                     {state.categoryList.map((val, index) => {
 
                                         if (state.data.category.length >= 3 && state.data.category.indexOf(val.category) === -1) {
-                                            return (<div style={{ padding: '5px' }} key={val._id}><input disabled type="checkbox" value={val.category} onChange={handleChangeChk} /> {val.category}</div>);
+                                            return (<div style={{ padding: '5px' }} key={val._id}><input disabled type="checkbox" checked={state.data.category.indexOf(val.category) !== -1} value={val.category} onChange={handleChangeChk} /> {val.category}</div>);
                                         }
-                                        return (<div style={{ padding: '5px' }} key={val._id}><input type="checkbox" value={val.category} onChange={handleChangeChk} /> {val.category.split("-").join(" ")}</div>);
+                                        return (<div style={{ padding: '5px' }} key={val._id}><input type="checkbox"   checked={state.data.category.indexOf(val.category) !== -1}  value={val.category} onChange={handleChangeChk} /> {val.category.split("-").join(" ")}</div>);
                                     })}
                                     {/* </div> */}
                                 </div>
@@ -419,17 +303,17 @@ const AddNews = () => {
                             <h4>Enter The Main Content</h4>
 
                         </div>
-                       
-                        {paras.map((val, i) => {
-                             
-                            return (
-                                <span key={i}>
-                                   
-                                    {val}
-                                </span>
+                        <div className="col-md-10 col-sm-12"> 
+                        <ReactQuill modules={modules}
+                                    formats={formats}
+                                    value={state.data.paras[0].content}
+                                    onChange={(e) => {
+                                      
+                                        
+                                        paragraphDataChange(e, 'content', 0);
+                                    }} />
 
-                            )
-                        })}
+</div>
                         <br />  <br />
                         <div className="d-flex justify-content-center" >
                             <button type="button" className="btn btn-secondary" onClick={addToSave}>Save</button>
@@ -438,7 +322,7 @@ const AddNews = () => {
                         <br />
                     </form>
                 </div>
-            </div> : ''}
+            </div> 
         </Card>
     )
 }

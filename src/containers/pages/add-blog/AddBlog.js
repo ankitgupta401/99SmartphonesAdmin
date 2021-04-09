@@ -62,43 +62,61 @@ export const AddBlog = () => {
                 console.log(state);
                 setState((prevState) => { return { ...prevState, loading: true } });
                 //save
-                let formData = new FormData();
-                Object.keys(state.data).forEach((value, index) => {
-                    console.log(value, state.data[value]);
-                    formData.append(value, state.data[value]);
-                });
 
-                axios.post("create_blog", formData).then(res => {
-                    if (res.data.code === 0) {
-                        Swal.fire('Success', 'Blog Added Successfully', 'success');
-                        setState((prevState) => {
-                            let temp = { ...prevState, images: [] };
-                            temp.data = { ...prevState.data };
-                            temp.data = {
-                                writer: '',
-                                description: '',
-                                image: '',
-                                deleted: false,
-                                title: '',
-                                category: '',
-                                file: '',
-                                date: new Date(Date.now()).toISOString()
-                            }
-                            return { ...temp, loading: false, save: false }
+                axios.post("/get_user_by_username", { email: state.data.writer}).then(res => {
+                    if(res.data.code === 0){
+                        let formData = new FormData();
+                        Object.keys(state.data).forEach((value, index) => {
+                            console.log(value, state.data[value]);
+                            formData.append(value, state.data[value]);
                         });
-                        // setState({...state, clear: false});
-                    } else {
-                        Swal.fire('Error', res.msg, 'error');
+        
+                        axios.post("create_blog", formData).then(res => {
+                            if (res.data.code === 0) {
+                                Swal.fire('Success', 'Blog Added Successfully', 'success');
+                                setState((prevState) => {
+                                    let temp = { ...prevState, images: [] };
+                                    temp.data = { ...prevState.data };
+                                    temp.data = {
+                                        writer: '',
+                                        description: '',
+                                        image: '',
+                                        deleted: false,
+                                        title: '',
+                                        category: '',
+                                        file: '',
+                                        date: new Date(Date.now()).toISOString()
+                                    }
+                                    return { ...temp, loading: false, save: false }
+                                });
+                                // setState({...state, clear: false});
+                            } else {
+                                Swal.fire('Error', res.msg, 'error');
+                            }
+        
+        
+                            setState((prevState) => {
+                                let temp = { ...prevState };
+        
+                                return { ...temp, loading: false, save: false }
+                            });
+                            //save
+                        }).catch(err => {
+                            Swal.fire('Error', err.msg, 'error');
+                            setState((prevState) => {
+                            
+                                return { ...prevState, loading: false, save: false }
+                            });
+                        });
+                    } else{
+                        Swal.fire('Error', res.data.msg, 'error');
+                        setState((prevState) => {
+                        
+                            return { ...prevState, loading: false, save: false }
+                        });
                     }
-
-
-                    setState((prevState) => {
-                        let temp = { ...prevState };
-
-                        return { ...temp, loading: false, save: false }
-                    });
-                    //save
-                });
+                })
+              
             }
 
 
@@ -251,9 +269,10 @@ export const AddBlog = () => {
                     <h4 style={{ paddingLeft: "6%" }}>Enter The Blog Details</h4>
                     <br />
                 </div>
-                {!state.save ? <div className="d-flex justify-content-center">
+                
+               <div className="d-flex justify-content-center">
                     <div className="col-md-8 col-sm-12">
-                        <form>
+                        <form  style={{ display: !state.loading ? 'block' : 'none' }} >
                             <div className="form-row">
                                 <div className="form-group col-md-6">
                                     <label htmlFor="inputEmail4">Email</label>
@@ -262,7 +281,7 @@ export const AddBlog = () => {
                                 <div className="form-group col-md-6">
                                     <label htmlFor="inputPassword4">Category</label>
   
-                                    <select  className="form-control"  onChange={(e) => paragraphDataChange(e, 'category')} id="exampleFormControlSelect2">
+                                    <select  className="form-control" value={state.data.category}  onChange={(e) => paragraphDataChange(e, 'category')} id="exampleFormControlSelect2">
  {state.category.map((val ,i)=> {
 
      return <option key={i} value={val.category}> {val.category.split("-").join(" ")}</option>
@@ -292,7 +311,7 @@ export const AddBlog = () => {
                             <button type="button" onClick={(e) => { e.preventDefault(); setState({ ...state, save: true }) }} className="btn btn-primary">Save</button>
                         </form>
                     </div>
-                </div> : ''}
+                </div> 
                 <br />
             </Card>
         </div>
