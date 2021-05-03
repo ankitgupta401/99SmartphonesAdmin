@@ -312,10 +312,11 @@ const AddNews = () => {
                                     onChange={(e) => {
                                         paragraphDataChange(e, 'content', 0);
                                     }} /> :
-                                  <div> <textarea value={state.data.paras[0].content} onChange={(e) => {
+                                  <div> <textarea className="form-control" value={state.data.paras[0].content} onChange={(e) => {
                                                     console.log(e.target.value)
                                                   paragraphDataChange(e.target.value, 'content', 0);
                                               }} ></textarea>
+                                              <br/>
                             <button style={{ marginLeft: "1%" }} onClick={() => setPreview(true)} type="button" className="btn btn-danger">Back</button>
                                               
                                               </div>
