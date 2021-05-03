@@ -258,7 +258,7 @@ const AddNews = () => {
 
                             <div className="col-md-3 col-sm-12">
                                 <label>Upload Main Image</label> <br />
-                                <input type="file" accept="image/*"  onChange={(e) => onImageChange(e, 'mainImage')} />
+                                <input type="text"  onChange={(e) => { contentChange(e.target.value, 'mainImage') }} />
                                 <br />
 
                             </div>
