@@ -63,6 +63,7 @@ let formats = [
 
 
 const AddNews = () => {
+    const [preview , setPreview] = useState(true)
     const [state, setState] = useState({
        
         data: {
@@ -142,6 +143,7 @@ const AddNews = () => {
             setState((prevState) => { return { ...prevState, loading: false } });
             // });
         } else {
+
             let isWriter = await axios.post("/get_user_by_username", { username: state.data.writer})
             console.log(isWriter.data.code)
             if(isWriter.data.code === 0){
@@ -258,7 +260,7 @@ const AddNews = () => {
 
                             <div className="col-md-3 col-sm-12">
                                 <label>Upload Main Image</label> <br />
-                                <input type="text"  onChange={(e) => { contentChange(e.target.value, 'mainImage') }} />
+                                <input type="text"  id="outlined-basic" className="form-control" onChange={(e) => { contentChange(e.target.value, 'mainImage') }} />
                                 <br />
 
                             </div>
@@ -304,19 +306,26 @@ const AddNews = () => {
 
                         </div>
                         <div className="col-md-10 col-sm-12"> 
-                        <ReactQuill modules={modules}
+                  {preview ? <ReactQuill modules={modules}
                                     formats={formats}
                                     value={state.data.paras[0].content}
                                     onChange={(e) => {
-                                      
-                                        
                                         paragraphDataChange(e, 'content', 0);
-                                    }} />
+                                    }} /> :
+                                  <div> <textarea value={state.data.paras[0].content} onChange={(e) => {
+                                                    console.log(e.target.value)
+                                                  paragraphDataChange(e.target.value, 'content', 0);
+                                              }} ></textarea>
+                            <button style={{ marginLeft: "1%" }} onClick={() => setPreview(true)} type="button" className="btn btn-danger">Back</button>
+                                              
+                                              </div>
+                                              } 
 
 </div>
                         <br />  <br />
+
                         <div className="d-flex justify-content-center" >
-                            <button type="button" className="btn btn-secondary" onClick={addToSave}>Save</button>
+                            <button type="button" className="btn btn-secondary" onClick={ () => {  !preview ?  addToSave() : setPreview(false) }} >Save</button>
                             <button style={{ marginLeft: "1%" }} type="reset" className="btn btn-danger">Clear</button>
                         </div>
                         <br />
