@@ -312,7 +312,7 @@ const AddNews = () => {
                                     onChange={(e) => {
                                         paragraphDataChange(e, 'content', 0);
                                     }} /> :
-                                  <div> <textarea className="form-control" value={state.data.paras[0].content} onChange={(e) => {
+                                  <div> <textarea className="form-control" rows={30} value={state.data.paras[0].content} onChange={(e) => {
                                                     console.log(e.target.value)
                                                   paragraphDataChange(e.target.value, 'content', 0);
                                               }} ></textarea>
